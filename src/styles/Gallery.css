@@ -1,0 +1,418 @@
+/* Стили для страницы галереи */
+.gallery-page {
+  font-family: 'Montserrat Alternates', sans-serif;
+  color: #fff;
+  position: relative;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  background: linear-gradient(45deg, #fff5f5, #ffe6e6);
+  background-size: cover;
+  background-position: center;
+  padding-top: 80px;
+}
+
+.gallery-page h1 {
+  text-align: center;
+  font-size: 3.5rem;
+  font-weight: 900;
+  margin-bottom: 3rem;
+  background: linear-gradient(45deg, rgba(255, 170, 255, 0.977), Tomato, Violet);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 50px red;
+}
+
+.gallery-page .container {
+  position: relative;
+  z-index: 1;
+  transform: translateZ(0);
+  will-change: transform;
+  border-radius: 15px;
+  margin: 20px auto;
+  max-width: 1200px;
+  padding: 2rem;
+}
+
+/* Стили для фильтров */
+.filter-container {
+  text-align: center;
+  margin-bottom: 2rem;
+  perspective: 1000px;
+}
+
+.filter-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  border-radius: 25px;
+  font-weight: 700;
+  font-family: Montserrat Alternates;
+  color: black;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s;
+  transform-style: preserve-3d;
+}
+
+.filter-btn:hover {
+  transform: translateY(-3px) rotateX(10deg);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.filter-btn.active {
+  background: linear-gradient(45deg, #ff6b6b, #ffc0cb);
+  transform: scale(1.1);
+}
+
+/* Стили для режима 3D */
+.mode-btn {
+  background: linear-gradient(45deg, #ff6b6b, #ffc0cb);
+  border: brown;
+  padding: 12px 25px;
+  margin: 20px 8px;
+  border-radius: 25px;
+  color: rgb(0, 0, 0);
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s;
+  font-family: 'Montserrat Alternates', sans-serif;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 100;
+  display: block;
+  margin: 0 auto 2rem;
+}
+
+.mode-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+}
+
+.mode-btn.active {
+  background: linear-gradient(45deg, #f13939, #ea637a);
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+}
+
+/* Стили для галереи */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  perspective: 2000px;
+  transform-style: preserve-3d;
+}
+
+.gallery-item {
+  position: relative;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 10px 32px rgba(178, 100, 115, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.preview-img,
+.gallery-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  filter: contrast(107%); /* Увеличивает контраст на 30% */
+}
+
+.gallery-item:hover {
+  box-shadow: 0 15px 45px rgba(178, 100, 115, 0.4);
+}
+
+.overlay {
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.4) 60%,
+    transparent 100%);
+  padding: 2rem;
+  color: white;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(20px);
+  transform-style: preserve-3d;
+}
+
+.gallery-item:hover .overlay {
+  bottom: 0;
+}
+
+/* Стили для анимации */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gallery-item {
+  animation: fadeInUp 0.6s ease-out backwards;
+}
+
+.gallery-item:nth-child(1) { animation-delay: 0.1s; }
+.gallery-item:nth-child(2) { animation-delay: 0.2s; }
+.gallery-item:nth-child(3) { animation-delay: 0.3s; }
+.gallery-item:nth-child(4) { animation-delay: 0.4s; }
+.gallery-item:nth-child(5) { animation-delay: 0.5s; }
+.gallery-item:nth-child(6) { animation-delay: 0.6s; }
+.gallery-item:nth-child(7) { animation-delay: 0.7s; }
+.gallery-item:nth-child(8) { animation-delay: 0.8s; }
+.gallery-item:nth-child(9) { animation-delay: 0.9s; }
+
+/* Стили для модального окна */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  max-width: 90%;
+  max-height: 90vh;
+  margin: auto;
+  display: block;
+}
+
+.close {
+  position: absolute;
+  right: 25px;
+  top: 10px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.close:hover {
+  color: #bbb;
+}
+
+/* Стили для контактной формы */
+.contact-form {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.contact-form h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: #333;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #666;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #ff6b6b;
+  box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
+  background: white;
+}
+
+.form-group textarea {
+  height: 120px;
+  resize: vertical;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(45deg, #ff6b6b, #ffc0cb);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
+  background: linear-gradient(45deg, #ff5252, #ff9eb5);
+}
+
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px dashed rgba(255, 107, 107, 0.5);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.file-upload-label:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(255, 107, 107, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+}
+
+.upload-icon {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.upload-text {
+  font-family: 'Montserrat Alternates', sans-serif;
+  color: #333;
+}
+
+.file-input {
+  display: none;
+}
+
+.photo-preview {
+  width: 100%;
+  min-height: 0;
+  max-height: 200px;
+  margin-top: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.photo-preview img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.photo-preview .remove-photo {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #ff5252;
+  transition: all 0.2s ease;
+}
+
+.photo-preview-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .gallery {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  .contact-form {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .contact-form h2 {
+    font-size: 20px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    padding: 10px;
+  }
+}
