@@ -24,8 +24,8 @@ function Navbar() {
             </Link>
           </li>
           <li>
-            <Link to="/phrases">
-              <button className={location.pathname === '/phrases' ? 'active' : ''}>Communication</button>
+            <Link to="/games">
+              <button className={location.pathname === '/games' ? 'active' : ''}>Games</button>
             </Link>
           </li>
         </ul>

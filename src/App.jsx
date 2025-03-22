@@ -1,11 +1,13 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Gallery from './pages/Gallery';
 import Story from './pages/Story';
+import Games from './pages/Games';
 import Navbar from './components/Navbar';
+import MusicPlayer from './components/MusicPlayer';
 import './index.css';
-import './App.css';
-import './styles/Gallery.css';
+
 
 function App() {
   return (
@@ -16,8 +18,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/story" element={<Story />} />
-          <Route path="/phrases" element={<div className="page-container"><h1>Communication Page Coming Soon</h1></div>} />
+          <Route path="/games" element={<Games />} />
         </Routes>
+        <MusicPlayer />
       </div>
     </Router>
   );

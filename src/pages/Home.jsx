@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { gsap } from 'gsap'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar';
-import GalleryImage from '../components/GalleryImage';
+import GalleryImage from '../components/gallery/GalleryImage';
 
 // Использовать относительные URL для изображений с помощью new URL() в Vite
 const image1 = new URL('/images/image_2025-02-28_01-11-28.png', import.meta.url).href;

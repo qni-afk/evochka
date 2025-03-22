@@ -4,6 +4,7 @@ import FilterButtons from '../components/gallery/FilterButtons';
 import GalleryItem from '../components/gallery/GalleryItem';
 import Modal from '../components/gallery/Modal';
 import ContactForm from '../components/gallery/ContactForm';
+import '../styles/Gallery.css';
 
 function Gallery() {
   const [is3DMode, setIs3DMode] = useState(false);
