@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState, useRef } from 'react'
 import { gsap } from 'gsap'
 import { Link } from 'react-router-dom'
@@ -15,8 +16,11 @@ const image6 = new URL('/images/eva%20sex.jpg', import.meta.url).href;
 function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentVideo, setCurrentVideo] = useState(0);
+  const [videoLoaded, setVideoLoaded] = useState([false, false, false, false]);
+  const [videoError, setVideoError] = useState([false, false, false, false]);
   const contentRef = useRef(null);
   const sectionsRef = useRef([]);
+  const videoRefs = useRef([]);
 
   const videos = [
     '/video/IMG_0886.MOV',
@@ -24,6 +28,145 @@ function Home() {
     '/video/IMG_6404.MOV',
     '/video/IMG_6710.MP4'
   ];
+
+  // Инициализация компонента
+  useEffect(() => {
+    // Принудительное воспроизведение первого видео при монтировании
+    const playFirstVideo = () => {
+      if (videoRefs.current[0]) {
+        videoRefs.current[0].play()
+          .then(() => console.log('First video started successfully'))
+          .catch(e => console.error('Error playing first video on mount:', e));
+      }
+    };
+
+    // Пробуем воспроизвести несколько раз с задержкой
+    playFirstVideo();
+    setTimeout(playFirstVideo, 500);
+    setTimeout(playFirstVideo, 1500);
+
+    // Предотвращаем блокировку автовоспроизведения через пользовательское взаимодействие
+    const handleUserInteraction = () => {
+      playFirstVideo();
+      document.removeEventListener('click', handleUserInteraction);
+      document.removeEventListener('touchstart', handleUserInteraction);
+    };
+
+    document.addEventListener('click', handleUserInteraction);
+    document.addEventListener('touchstart', handleUserInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleUserInteraction);
+      document.removeEventListener('touchstart', handleUserInteraction);
+    };
+  }, []);
+
+  // Обработка воспроизведения и ошибок видео
+  useEffect(() => {
+    // Предзагрузка всех видео при монтировании компонента
+    videos.forEach((videoSrc, idx) => {
+      const videoPreload = document.createElement('video');
+      videoPreload.src = videoSrc;
+      videoPreload.preload = 'auto';
+      videoPreload.muted = true;
+      videoPreload.style.display = 'none';
+      document.body.appendChild(videoPreload);
+
+      // Удаляем элемент после загрузки
+      videoPreload.addEventListener('loadeddata', () => {
+        document.body.removeChild(videoPreload);
+      });
+
+      // Для первого видео, начинаем воспроизведение сразу после загрузки
+      if (idx === 0) {
+        videoPreload.addEventListener('loadeddata', () => {
+          if (videoRefs.current[0]) {
+            videoRefs.current[0].play().catch(e => {
+              console.error('Ошибка воспроизведения первого видео:', e);
+            });
+          }
+        });
+      }
+    });
+
+    // Force play current video
+    const playCurrentVideo = () => {
+      if (videoRefs.current[currentVideo]) {
+        videoRefs.current[currentVideo].play().catch(e => {
+          console.error('Ошибка воспроизведения текущего видео:', e);
+        });
+      }
+    };
+
+    // Try multiple times to play the video
+    const playInterval = setInterval(playCurrentVideo, 1000);
+    playCurrentVideo();
+
+    // After 5 seconds, clear the interval
+    setTimeout(() => {
+      clearInterval(playInterval);
+    }, 5000);
+
+    videoRefs.current.forEach((videoEl, index) => {
+      if (!videoEl) return;
+
+      // Явно устанавливаем атрибуты для всех устройств
+      videoEl.muted = true;
+      videoEl.setAttribute('muted', '');
+      videoEl.setAttribute('playsinline', '');
+      videoEl.setAttribute('webkit-playsinline', 'true');
+      videoEl.setAttribute('preload', 'auto');
+
+      const handleCanPlay = () => {
+        const newLoaded = [...videoLoaded];
+        newLoaded[index] = true;
+        setVideoLoaded(newLoaded);
+
+        // Если это текущее видео, пробуем воспроизвести его
+        if (index === currentVideo) {
+          const playPromise = videoEl.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(e => {
+              console.error('Ошибка воспроизведения:', e);
+              const newErrors = [...videoError];
+              newErrors[index] = true;
+              setVideoError(newErrors);
+            });
+          }
+        }
+      };
+
+      const handleError = (e) => {
+        console.error(`Ошибка загрузки видео ${index}:`, e);
+        const newErrors = [...videoError];
+        newErrors[index] = true;
+        setVideoError(newErrors);
+      };
+
+      videoEl.addEventListener('canplay', handleCanPlay);
+      videoEl.addEventListener('error', handleError);
+
+      return () => {
+        videoEl.removeEventListener('canplay', handleCanPlay);
+        videoEl.removeEventListener('error', handleError);
+      };
+    });
+  }, [currentVideo, videoRefs.current.length]);
+
+  // Смена активного видео
+  useEffect(() => {
+    videoRefs.current.forEach((videoEl, index) => {
+      if (!videoEl) return;
+
+      if (index === currentVideo) {
+        if (videoLoaded[index] && !videoError[index]) {
+          videoEl.play().catch(e => console.error('Ошибка воспроизведения:', e));
+        }
+      } else {
+        videoEl.pause();
+      }
+    });
+  }, [currentVideo, videoLoaded]);
 
   // Инициализация GSAP анимаций
   useEffect(() => {
@@ -92,44 +235,10 @@ function Home() {
       setCurrentVideo(prev => (prev + 1) % videos.length);
     }, 10000);
 
-    // Создаем парящие сердечки
-    function createHeart() {
-      const heart = document.createElement('div');
-      heart.className = 'heart';
-      heart.innerHTML = 'love you';
-
-      // Случайная позиция по всему экрану
-      heart.style.left = Math.random() * 100 + 'vw';
-      heart.style.top = Math.random() * 100 + 'vh';
-
-      // Случайные параметры движения
-      const randomX = (Math.random() - 0.5) * 2; // от -1 до 1
-      const randomY = Math.random() * 0.5 + 0.5; // от 0.5 до 1
-
-      heart.style.setProperty('--random-x', randomX);
-      heart.style.setProperty('--random-y', randomY);
-
-      // Случайные параметры внешнего вида
-      heart.style.fontSize = Math.random() * 10 + 10 + 'px';
-      // heart.style.filter = `hue-rotate(${Math.random() * 360}deg)`; // Закомментировал строку, делающую сердечки разноцветными
-      heart.style.opacity = Math.random() * 0.6 + 0.4;
-
-      const heartsContainer = document.querySelector('.hearts');
-      if (heartsContainer) {
-        heartsContainer.appendChild(heart);
-
-        // Автоудаление через 5 секунд
-        setTimeout(() => heart.remove(), 5000);
-      }
-    }
-
-    const heartsInterval = setInterval(createHeart, 300);
-
     // Очистка при размонтировании компонента
     return () => {
       clearInterval(timerInterval);
       clearInterval(videoInterval);
-      clearInterval(heartsInterval);
       observer.disconnect();
     };
   }, [videos]);
@@ -147,6 +256,24 @@ function Home() {
     }
   };
 
+  // Определяем тип MIME для видео
+  const getVideoType = (src) => {
+    const extension = src.split('.').pop().toLowerCase();
+    switch (extension) {
+      case 'mov':
+        return 'video/quicktime';
+      case 'mp4':
+        return 'video/mp4';
+      default:
+        return 'video/mp4';
+    }
+  };
+
+  // Проверяем, является ли файл MOV
+  const isMOVFile = (src) => {
+    return src.toLowerCase().endsWith('.mov');
+  };
+
   return (
     <div className="wrapper">
       {/* Темный оверлей */}
@@ -157,16 +284,6 @@ function Home() {
         {/* Навигация */}
         <Navbar />
 
-        {/* Контролы для музыки */}
-        <div className="music-controls">
-          <button id="music-btn" className={`music-btn ${isPlaying ? 'playing' : ''}`} onClick={toggleMusic}>
-            <div className="loader" style={{ opacity: isPlaying ? 1 : 0.5 }}></div>
-          </button>
-          <div className="volume-slider-container">
-            <input type="range" id="volume-slider" min="0" max="100" defaultValue="50" />
-          </div>
-        </div>
-
         {/* Таймер отношений */}
         <div id="love-timer"></div>
       </div>
@@ -174,7 +291,7 @@ function Home() {
       {/* Основной контент */}
       <div className="content" ref={contentRef}>
         {/* Аудио */}
-        <audio id="background-music" loop>
+        <audio id="background-music" loop preload="auto">
           <source src="/music/i love you so by the walters.mp3" type="audio/mpeg" />
         </audio>
 
@@ -183,12 +300,29 @@ function Home() {
           {videos.map((src, index) => (
             <video
               key={index}
+              ref={el => videoRefs.current[index] = el}
               autoPlay
               muted
               loop
+              playsInline
+              webkit-playsinline="true"
               className={index === currentVideo ? 'active' : ''}
+              preload="auto"
+              style={{opacity: index === currentVideo ? 1 : 0}}
+              onLoadedData={(e) => {
+                if (index === currentVideo) {
+                  e.target.play().catch(err => console.error('Video play error:', err));
+                }
+                const newLoaded = [...videoLoaded];
+                newLoaded[index] = true;
+                setVideoLoaded(newLoaded);
+              }}
             >
-              <source src={src} type="video/mp4" />
+              <source src={src} type={getVideoType(src)} />
+              {isMOVFile(src) && (
+                <source src={src.replace(/\.mov$/i, '.mp4')} type="video/mp4" />
+              )}
+              Ваш браузер не поддерживает видео.
             </video>
           ))}
         </div>
@@ -207,8 +341,6 @@ function Home() {
               <button className="no-btn">нет...</button>
             </div>
           </div>
-
-          <div className="hearts"></div>
         </div>
 
         {/* Секции с текстом */}

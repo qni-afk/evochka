@@ -1,94 +1,339 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Navbar from '../components/Navbar';
 import FilterButtons from '../components/gallery/FilterButtons';
 import GalleryItem from '../components/gallery/GalleryItem';
-import Modal from '../components/gallery/Modal';
 import ContactForm from '../components/gallery/ContactForm';
 import '../styles/Gallery.css';
+import { IoMdCloudUpload } from 'react-icons/io';
 
 function Gallery() {
   const [is3DMode, setIs3DMode] = useState(false);
-  const [activeFilter, setActiveFilter] = useState('all');
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentVideo, setCurrentVideo] = useState('');
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [visibleItems, setVisibleItems] = useState({});
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingStage, setLoadingStage] = useState('images');
+  const [showContactForm, setShowContactForm] = useState(false);
+  const preloadedVideos = useRef({});
+  const totalAssets = useRef({ images: 0, videos: 0 });
+  const loadedAssets = useRef({ images: 0, videos: 0 });
+  const errorItems = useRef(new Set());
+  const galleryRef = useRef(null);
+  const itemRefs = useRef([]);
+  const observerRef = useRef({});
 
-  // Данные о галерее (видео и превью)
+  // Convert original gallery items to new format
   const galleryItems = [
-    { id: 1, previewSrc: '/video/preview gif/1.png', videoSrc: '/video/gif/1.mp4', category: 'funny' },
-    { id: 2, previewSrc: '/video/preview gif/2.png', videoSrc: '/video/gif/2.mp4', category: 'funny' },
-    { id: 3, previewSrc: '/video/preview gif/3.png', videoSrc: '/video/gif/3.mp4', category: 'funny' },
-    { id: 4, previewSrc: '/video/preview gif/4.png', videoSrc: '/video/gif/4.mp4', category: 'cool' },
-    { id: 5, previewSrc: '/video/preview gif/5.png', videoSrc: '/video/gif/5.mp4', category: 'cool' },
-    { id: 6, previewSrc: '/video/preview gif/6.png', videoSrc: '/video/gif/6.mp4', category: 'cute' },
-    { id: 7, previewSrc: '/video/preview gif/7.png', videoSrc: '/video/gif/7.MOV', category: 'cute' },
-    { id: 8, previewSrc: '/video/preview gif/8.png', videoSrc: '/video/gif/8.mp4', category: 'cute' },
-    { id: 9, previewSrc: '/video/preview gif/9.png', videoSrc: '/video/gif/9.MOV', category: 'cute' },
-    { id: 10, previewSrc: '/video/preview gif/10.jpg', videoSrc: '/video/gif/10.MOV', category: 'cute' },
-    { id: 11, previewSrc: '/video/preview gif/11.jpg', videoSrc: '/video/gif/11.MOV', category: 'cute' },
-    { id: 12, previewSrc: '/video/preview gif/12.jpg', videoSrc: '/video/gif/12.MP4', category: 'cute' },
-    { id: 13, previewSrc: '/video/preview gif/13.jpg', videoSrc: '/video/gif/13.MOV', category: 'cute' },
-    { id: 14, previewSrc: '/video/preview gif/14.png', videoSrc: '/video/gif/14.mp4', category: 'cute' },
-    { id: 15, previewSrc: '/video/preview gif/15.png', videoSrc: '/video/gif/15.mp4', category: 'cute' },
-
+    { id: 1, title: 'Funny Moment 1', url: '/video/gif/1.mp4', type: 'video', category: 'Funny', previewUrl: '/video/preview gif/1.png' },
+    { id: 2, title: 'Funny Moment 2', url: '/video/gif/2.mp4', type: 'video', category: 'Funny', previewUrl: '/video/preview gif/2.png' },
+    { id: 3, title: 'Funny Moment 3', url: '/video/gif/3.mp4', type: 'video', category: 'Funny', previewUrl: '/video/preview gif/3.png' },
+    { id: 4, title: 'Cool Moment 1', url: '/video/gif/4.mp4', type: 'video', category: 'Cool', previewUrl: '/video/preview gif/4.png' },
+    { id: 5, title: 'Cool Moment 2', url: '/video/gif/5.mp4', type: 'video', category: 'Cool', previewUrl: '/video/preview gif/5.png' },
+    { id: 6, title: 'Cute Moment 1', url: '/video/gif/6.mp4', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/6.png' },
+    { id: 7, title: 'Cute Moment 2', url: '/video/gif/7.MOV', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/7.png' },
+    { id: 8, title: 'Cute Moment 3', url: '/video/gif/8.mp4', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/8.png' },
+    { id: 9, title: 'Cute Moment 4', url: '/video/gif/9.MOV', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/9.png' },
+    { id: 10, title: 'Cute Moment 5', url: '/video/gif/10.MOV', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/10.jpg' },
+    { id: 11, title: 'Cute Moment 6', url: '/video/gif/11.MOV', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/11.jpg' },
+    { id: 12, title: 'Cute Moment 7', url: '/video/gif/12.MP4', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/12.jpg' },
+    { id: 13, title: 'Cute Moment 8', url: '/video/gif/13.MOV', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/13.jpg' },
+    { id: 14, title: 'Cute Moment 9', url: '/video/gif/14.mp4', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/14.png' },
+    { id: 15, title: 'Cute Moment 10', url: '/video/gif/15.mp4', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/15.png' },
   ];
 
-  const openModal = (videoSrc) => {
-    setCurrentVideo(videoSrc);
-    setModalOpen(true);
+  // Determine total asset count
+  useEffect(() => {
+    totalAssets.current = {
+      images: galleryItems.length,
+      videos: galleryItems.length
+    };
+  }, []);
+
+  // Effect for handling 3D mode
+  useEffect(() => {
+    const gallery = galleryRef.current;
+    if (!gallery) return;
+
+    if (is3DMode) {
+      gallery.classList.add('gallery-grid-3d');
+    } else {
+      gallery.classList.remove('gallery-grid-3d');
+    }
+  }, [is3DMode]);
+
+  // Setup intersection observer for each gallery item
+  useEffect(() => {
+    // Setup intersection observer for each gallery item
+    itemRefs.current = itemRefs.current.slice(0, getFilteredItems().length);
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const id = parseInt(entry.target.getAttribute('data-id'));
+        setVisibleItems(prev => ({
+          ...prev,
+          [id]: entry.isIntersecting
+        }));
+      });
+    }, observerOptions);
+
+    // Observe all gallery items
+    itemRefs.current.forEach((ref, index) => {
+      if (ref) {
+        ref.setAttribute('data-id', getFilteredItems()[index].id);
+        observer.observe(ref);
+      }
+    });
+
+    observerRef.current = observer;
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [activeFilter]);
+
+  // Function to update loading progress
+  const updateLoadingProgress = () => {
+    const { images: loadedImages, videos: loadedVideos } = loadedAssets.current;
+    const { images: totalImages, videos: totalVideos } = totalAssets.current;
+    let progress;
+
+    if (loadingStage === 'images') {
+      progress = Math.floor((loadedImages / totalImages) * 50);
+    } else {
+      progress = 50 + Math.floor((loadedVideos / totalVideos) * 50);
+    }
+
+    setLoadingProgress(progress);
+
+    // If everything is loaded, mark loading as complete
+    if (progress >= 100 || (loadedImages >= totalImages && loadedVideos >= totalVideos)) {
+      setTimeout(() => {
+        setAssetsLoaded(true);
+      }, 500);
+    }
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
-    setCurrentVideo('');
+  // Preload images
+  useEffect(() => {
+    const loadImages = async () => {
+      setLoadingStage('images');
+
+      const imagePromises = galleryItems.map((item) => {
+        return new Promise(resolve => {
+          const img = new Image();
+          img.src = item.previewUrl;
+
+          img.onload = () => {
+            loadedAssets.current.images++;
+            updateLoadingProgress();
+            resolve(true);
+          };
+
+          img.onerror = () => {
+            console.error(`Failed to load image: ${item.previewUrl}`);
+            errorItems.current.add(item.id);
+            loadedAssets.current.images++;
+            updateLoadingProgress();
+            resolve(false);
+          };
+        });
+      });
+
+      // Wait for all images to load
+      await Promise.all(imagePromises);
+
+      // After loading images, move on to loading videos
+      setLoadingStage('videos');
+      await preloadAllVideos();
+
+      // Final check - if too many errors, show gallery anyway
+      if (loadingProgress < 100 && assetsLoaded === false) {
+        setAssetsLoaded(true);
+      }
+    };
+
+    loadImages();
+  }, []);
+
+  // Function to preload all videos
+  const preloadAllVideos = async () => {
+    const videoPromises = galleryItems.map(item => {
+      // Skip preloading videos for items with image errors
+      if (errorItems.current.has(item.id)) {
+        loadedAssets.current.videos++;
+        updateLoadingProgress();
+        return Promise.resolve(false);
+      }
+      return preloadVideo(item);
+    });
+
+    try {
+      await Promise.all(videoPromises);
+    } catch (error) {
+      console.error("Error preloading videos:", error);
+    } finally {
+      // Set loading flag to true even if there were errors
+      setTimeout(() => {
+        setAssetsLoaded(true);
+      }, 500);
+    }
+  };
+
+  // Function to preload an individual video
+  const preloadVideo = (item) => {
+    const { id, url } = item;
+
+    if (preloadedVideos.current[url]) {
+      return Promise.resolve(true); // Video already loaded
+    }
+
+    return new Promise((resolve) => {
+      const video = document.createElement('video');
+      video.muted = true;
+      video.playsInline = true;
+      video.preload = 'metadata'; // First load only metadata
+
+      // Determine if it's a MOV file (which may need special handling)
+      const isMovFile = url.toLowerCase().endsWith('.mov');
+
+      // For MOV files, mark them as preloaded and move on
+      if (isMovFile) {
+        preloadedVideos.current[url] = true;
+        loadedAssets.current.videos++;
+        updateLoadingProgress();
+        return resolve(true);
+      }
+
+      const timeoutId = setTimeout(() => {
+        // If loading takes too long, mark as loaded
+        // to avoid blocking the user interface
+        errorItems.current.add(id);
+        loadedAssets.current.videos++;
+        updateLoadingProgress();
+        resolve(false);
+      }, 10000); // 10 second timeout
+
+      // Listen for 'loadedmetadata' event, which signals metadata loading
+      video.addEventListener('loadedmetadata', () => {
+        clearTimeout(timeoutId);
+        preloadedVideos.current[url] = true;
+        loadedAssets.current.videos++;
+        updateLoadingProgress();
+        resolve(true);
+      }, { once: true });
+
+      // Also handle loading errors
+      video.addEventListener('error', () => {
+        clearTimeout(timeoutId);
+        console.error(`Error loading video: ${url}`);
+        errorItems.current.add(id);
+        loadedAssets.current.videos++;
+        updateLoadingProgress();
+        resolve(false);
+      }, { once: true });
+
+      // Start loading
+      video.src = url;
+      video.load();
+    });
+  };
+
+  const handleFilterChange = (newFilter) => {
+    setActiveFilter(newFilter);
+  };
+
+  const getFilteredItems = () => {
+    if (activeFilter === 'All') {
+      return galleryItems;
+    }
+    return galleryItems.filter(item => item.category === activeFilter);
   };
 
   const toggleMode = () => {
     setIs3DMode(prev => !prev);
   };
 
-  // Фильтрация элементов
-  const filteredItems = activeFilter === 'all'
-    ? galleryItems
-    : galleryItems.filter(item => item.category === activeFilter);
+  const toggleContactForm = () => {
+    setShowContactForm(!showContactForm);
+  };
 
   return (
-    <div className="gallery-page">
+    <div className="page-container">
       <Navbar />
+      <div className="gallery-container">
+        <h1 className="gallery-title">Gallery</h1>
 
-      <div className="container">
-        <h1>My sexy wife</h1>
+        {!assetsLoaded ? (
+          <div className="gallery-loading">
+            <div className="loading-bar-container">
+              <div className="loading-bar" style={{ width: `${loadingProgress}%` }}></div>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="gallery-controls">
+              <div className="mode-toggle">
+                <label className="toggle-label">
+                  <input
+                    type="checkbox"
+                    checked={is3DMode}
+                    onChange={toggleMode}
+                    className="toggle-input"
+                  />
+                  <span className="toggle-slider"></span>
+                  <span className="toggle-text">{is3DMode ? '3D' : '2D'}</span>
+                </label>
+              </div>
+              <FilterButtons activeFilter={activeFilter} onFilterChange={handleFilterChange} />
+            </div>
 
-        <FilterButtons setActiveFilter={setActiveFilter} />
-
-        <button
-          className={`mode-btn ${is3DMode ? 'active' : ''}`}
-          id="3d-mode"
-          onClick={toggleMode}
-        >
-          3D Mode
-        </button>
-
-        <div className="gallery">
-          {filteredItems.map((item) => (
+            <div
+              ref={galleryRef}
+              className={`gallery-grid ${is3DMode ? 'gallery-grid-3d' : ''}`}
+            >
+              {getFilteredItems().map((item, index) => (
+                <div
+                  key={item.id}
+                  ref={el => itemRefs.current[index] = el}
+                  className="gallery-item-container"
+                >
             <GalleryItem
-              key={item.id}
-              previewSrc={item.previewSrc}
-              videoSrc={item.videoSrc}
-              category={item.category}
-              is3DMode={is3DMode}
-              openModal={openModal}
-            />
+                    item={{
+                      ...item,
+                      thumbnail: item.previewUrl
+                    }}
+                    index={index}
+                    isVisible={visibleItems[item.id] || false}
+                  />
+                </div>
           ))}
         </div>
 
-        <ContactForm />
-      </div>
+            <div className="gallery-footer">
+              <button className="contact-button" onClick={toggleContactForm}>
+                {showContactForm ? (
+                  <>
+                    <IoMdCloudUpload className="upload-icon" />
+                    <span>Скрыть форму</span>
+                  </>
+                ) : (
+                  'Загрузить свои фото'
+                )}
+              </button>
 
-      <Modal
-        isOpen={modalOpen}
-        videoSrc={currentVideo}
-        onClose={closeModal}
-      />
+              {showContactForm && <ContactForm />}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

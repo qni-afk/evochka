@@ -1,110 +1,143 @@
-import { useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
-function GalleryItem({ previewSrc, videoSrc, category, is3DMode, openModal }) {
-  const itemRef = useRef(null);
+const GalleryItem = ({ item, onClick, index, isVisible }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const videoRef = useRef(null);
-  const previewRef = useRef(null);
+  const itemRef = useRef(null);
 
-  // Обработка 3D эффекта
+  // Предварительно загружаем видео, когда элемент становится видимым
   useEffect(() => {
-    const item = itemRef.current;
-    if (!item) return;
-
-    const handle3D = (e) => {
-      if (!is3DMode) return;
-
-      const rect = item.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const xPercent = (x / rect.width) * 100;
-      const yPercent = (y / rect.height) * 100;
-      const rotateX = ((yPercent - 50) / 50) * -25;
-      const rotateY = ((xPercent - 50) / 50) * 25;
-
-      item.style.transform = `
-        perspective(1000px)
-        rotateX(${rotateX}deg)
-        rotateY(${rotateY}deg)
-        scale3d(1.1, 1.1, 1.1)
-        translateZ(50px)
-      `;
-    };
-
-    const resetTransform = () => {
-      item.style.transform = '';
-    };
-
-    if (is3DMode) {
-      item.addEventListener('mousemove', handle3D);
-      item.addEventListener('mouseleave', resetTransform);
-    } else {
-      resetTransform();
+    if (isVisible && item.type === 'video' && videoRef.current) {
+      videoRef.current.preload = 'auto'; // Полностью загружаем видео
+      videoRef.current.load();
     }
+  }, [isVisible, item.type]);
 
-    return () => {
-      item.removeEventListener('mousemove', handle3D);
-      item.removeEventListener('mouseleave', resetTransform);
-    };
-  }, [is3DMode]);
-
-  // Обработка наведения для видео
+  // Эффект для автоматического воспроизведения видео при наведении
   useEffect(() => {
-    const item = itemRef.current;
-    const video = videoRef.current;
-    const preview = previewRef.current;
+    if (isHovered && item.type === 'video' && videoRef.current) {
+      const playVideo = () => {
+        videoRef.current.play().catch(err => {
+          console.error('Error playing video on hover:', err);
+        });
+      };
 
-    const handleMouseEnter = () => {
-      if (video && preview) {
-        video.play();
-        preview.style.opacity = '0';
-        video.style.opacity = '1';
-      }
-    };
+      // Пытаемся воспроизвести видео сразу и с небольшой задержкой для надежности
+      playVideo();
+      const timer = setTimeout(playVideo, 100);
 
-    const handleMouseLeave = () => {
-      if (video && preview) {
-        video.pause();
-        video.currentTime = 0;
-        preview.style.opacity = '1';
-        video.style.opacity = '0';
-      }
-    };
-
-    if (item && video && preview) {
-      item.addEventListener('mouseenter', handleMouseEnter);
-      item.addEventListener('mouseleave', handleMouseLeave);
+      return () => clearTimeout(timer);
     }
+  }, [isHovered, item.type]);
 
-    return () => {
-      if (item && video && preview) {
-        item.removeEventListener('mouseenter', handleMouseEnter);
-        item.removeEventListener('mouseleave', handleMouseLeave);
-      }
-    };
-  }, []);
+  const handleItemClick = () => {
+    if (onClick) onClick(index);
+  };
+
+  const handleLoad = () => {
+    setIsLoaded(true);
+  };
+
+  const handleError = () => {
+    console.error(`Failed to load ${item.type}: ${item.url}`);
+    setIsError(true);
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    if (item.type === 'video' && videoRef.current) {
+      // Установить звук на минимум, но не полностью выключать
+      videoRef.current.volume = 0.1;
+      videoRef.current.play().catch(err => {
+        console.error('Error playing video on hover:', err);
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (item.type === 'video' && videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  };
+
+  const handleVideoLoaded = () => {
+    setVideoLoaded(true);
+    setIsLoaded(true);
+    // Если уже наведен, начинаем воспроизведение
+    if (isHovered && videoRef.current) {
+      videoRef.current.play().catch(err => {
+        console.error('Error playing loaded video:', err);
+      });
+    }
+  };
+
+  // Определяем оптимальные классы для элементов галереи
+  const galleryItemClasses = `gallery-item ${item.category.toLowerCase()} ${isLoaded ? 'loaded' : 'loading'}`;
 
   return (
     <div
-      className="gallery-item"
-      data-category={category}
       ref={itemRef}
-      onClick={() => openModal(videoSrc)}
+      className={galleryItemClasses}
+      onClick={handleItemClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <img
-        src={previewSrc}
-        alt="Preview"
-        className="preview-img"
-        ref={previewRef}
-      />
-      <video className="gallery-video" loop muted ref={videoRef}>
-        <source src={videoSrc} type="video/mp4" />
-      </video>
-      <div className="overlay" style={{ display: 'none' }}>
-        <h3>Видео</h3>
-        <p>Наведите для воспроизведения</p>
-      </div>
+      {!isLoaded && !isError && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+        </div>
+      )}
+
+      {isError && (
+        <div className="error-overlay">
+          <div className="error-message">Failed to load</div>
+        </div>
+      )}
+
+      {item.type === 'image' ? (
+        <img
+          src={item.url}
+          alt={item.title}
+          onLoad={handleLoad}
+          onError={handleError}
+          style={{ display: isLoaded ? 'block' : 'none' }}
+        />
+      ) : (
+        <>
+          {/* Превью изображение для видео */}
+          <img
+            src={item.thumbnail || item.previewUrl}
+            alt={item.title}
+            className="gallery-preview"
+            onLoad={handleLoad}
+            onError={handleError}
+            style={{ display: isLoaded && !isHovered ? 'block' : 'none' }}
+          />
+          {/* Видео для воспроизведения при наведении */}
+          <video
+            ref={videoRef}
+            src={item.url}
+            className="gallery-video"
+            muted={false}
+            volume={0.1}
+            playsInline
+            loop
+            autoPlay={isHovered}
+            preload="auto"
+            style={{ display: isHovered ? 'block' : 'none' }}
+            onCanPlay={handleVideoLoaded}
+            onLoadedData={handleVideoLoaded}
+            onError={handleError}
+          />
+        </>
+      )}
     </div>
   );
-}
+};
 
 export default GalleryItem;

@@ -6,7 +6,7 @@
   min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  background: linear-gradient(45deg, #fff5f5, #ffe6e6);
+  background: linear-gradient(45deg, #f8e8d4, #f9ede0);
   background-size: cover;
   background-position: center;
   padding-top: 80px;
@@ -17,10 +17,10 @@
   font-size: 3.5rem;
   font-weight: 900;
   margin-bottom: 3rem;
-  background: linear-gradient(45deg, rgba(255, 170, 255, 0.977), Tomato, Violet);
+  background: linear-gradient(45deg, #f0c097, #f4d4b8, #e5ad82);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 50px red;
+  text-shadow: 0 0 50px #f0c097;
 }
 
 .gallery-page .container {
@@ -34,385 +34,905 @@
   padding: 2rem;
 }
 
-/* Стили для фильтров */
-.filter-container {
+/* Основные стили галереи */
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f4a0a9 0%, #ffc3cd 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.page-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255, 156, 173, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 90% 70%, rgba(255, 182, 194, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.gallery-container {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.gallery-title {
   text-align: center;
-  margin-bottom: 2rem;
-  perspective: 1000px;
+  margin-bottom: 30px;
+  font-size: 36px;
+  font-weight: 700;
+  color: rgba(147, 112, 219, 0.9);
 }
 
-.filter-btn {
-  background: rgba(255, 255, 255, 0.1);
+/* Стили для контролов галереи */
+.gallery-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Стили для переключателя режима */
+.mode-toggle {
+  position: relative;
+  left: 100px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+  background-color: #ffcdd2;
+  border-radius: 26px;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+}
+
+.toggle-slider:before {
+  content: '';
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-input:checked + .toggle-slider {
+  background-color: #f8bbc0;
+}
+
+.toggle-input:checked + .toggle-slider:before {
+  transform: translateX(24px);
+}
+
+.toggle-text {
+  font-weight: 500;
+  color: #e57383;
+}
+
+/* Стили для кнопок фильтра */
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-button {
+  padding: 8px 16px;
   border: none;
-  padding: 10px 20px;
-  margin: 0 5px;
-  border-radius: 25px;
-  font-weight: 700;
-  font-family: Montserrat Alternates;
-  color: black;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ffecef, #ffd6dc);
+  color: #d67b89;
+  font-weight: 500;
   cursor: pointer;
-  backdrop-filter: blur(5px);
-  transition: all 0.3s;
-  transform-style: preserve-3d;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(214, 123, 137, 0.1);
 }
 
-.filter-btn:hover {
-  transform: translateY(-3px) rotateX(10deg);
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+.filter-button:hover {
+  background: linear-gradient(135deg, #ffd6dc, #ffecef);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(214, 123, 137, 0.2);
 }
 
-.filter-btn.active {
-  background: linear-gradient(45deg, #ff6b6b, #ffc0cb);
-  transform: scale(1.1);
+.filter-button.active {
+  background: linear-gradient(135deg, #ffb2c0, #ff9cad);
+  color: white;
+  box-shadow: 0 4px 8px rgba(255, 156, 173, 0.3);
 }
 
-/* Стили для режима 3D */
-.mode-btn {
-  background: linear-gradient(45deg, #ff6b6b, #ffc0cb);
-  border: brown;
-  padding: 12px 25px;
-  margin: 20px 8px;
-  border-radius: 25px;
-  color: rgb(0, 0, 0);
-  font-weight: 700;
-  cursor: pointer;
-  backdrop-filter: blur(5px);
-  transition: all 0.3s;
-  font-family: 'Montserrat Alternates', sans-serif;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  z-index: 100;
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-.mode-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-3px);
-}
-
-.mode-btn.active {
-  background: linear-gradient(45deg, #f13939, #ea637a);
-  box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
-}
-
-/* Стили для галереи */
-.gallery {
+/* Стили для сетки галереи - единая версия без медиазапросов */
+.gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
-  perspective: 2000px;
-  transform-style: preserve-3d;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  width: 95%;
+  margin: 30px auto;
+  max-width: 1800px;
+  padding: 0 20px;
 }
 
+@media (max-width: 1600px) {
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+/* Стили для элементов галереи - обновленные */
 .gallery-item {
   position: relative;
-  aspect-ratio: 1/1;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%; /* Квадратные элементы */
   overflow: hidden;
-  border-radius: 15px;
-  box-shadow: 0 10px 32px rgba(178, 100, 115, 0.3);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  transform-style: preserve-3d;
-  transform: translateZ(0);
-  will-change: transform;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-height: 300px;
+  min-width: 300px;
 }
 
-.preview-img,
-.gallery-video {
+/* Контейнер элемента галереи */
+.gallery-item-container {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  height: 100%;
+  display: flex;
+  min-height: 300px;
+  transform: scale(1);
+}
+
+.gallery-item-container:hover {
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+/* Улучшенные стили для картинок и видео */
+.gallery-item img,
+.gallery-item video {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 24px;
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  background-color: transparent;
+  will-change: transform;
+}
+
+.gallery-item-container:hover .gallery-item img,
+.gallery-item-container:hover .gallery-item video {
+  transform: scale(1.05);
+}
+
+/* Убираем hover эффект напрямую на изображениях, так как теперь они масштабируются через родительский контейнер */
+.gallery-item img:hover,
+.gallery-item video:hover {
+  transform: none;
+}
+
+/* Стили для категорий */
+.gallery-item.funny {
+  background: linear-gradient(45deg, #ffccd5, #ffd6e0);
+}
+
+.gallery-item.cool {
+  background: linear-gradient(45deg, #ffc4d0, #ffd4df);
+}
+
+.gallery-item.cute {
+  background: linear-gradient(45deg, #ffbecb, #ffd1dc);
+}
+
+/* Стили для видео в галерее */
+.gallery-video {
   position: absolute;
-  top: 0;
-  left: 0;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  filter: contrast(107%); /* Увеличивает контраст на 30% */
-}
-
-.gallery-item:hover {
-  box-shadow: 0 15px 45px rgba(178, 100, 115, 0.4);
-}
-
-.overlay {
-  position: absolute;
-  bottom: -100%;
-  left: 0;
-  right: 0;
-  background: linear-gradient(to top,
-    rgba(0, 0, 0, 0.8) 0%,
-    rgba(0, 0, 0, 0.4) 60%,
-    transparent 100%);
-  padding: 2rem;
-  color: white;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateZ(20px);
-  transform-style: preserve-3d;
-}
-
-.gallery-item:hover .overlay {
-  bottom: 0;
-}
-
-/* Стили для анимации */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.gallery-item {
-  animation: fadeInUp 0.6s ease-out backwards;
-}
-
-.gallery-item:nth-child(1) { animation-delay: 0.1s; }
-.gallery-item:nth-child(2) { animation-delay: 0.2s; }
-.gallery-item:nth-child(3) { animation-delay: 0.3s; }
-.gallery-item:nth-child(4) { animation-delay: 0.4s; }
-.gallery-item:nth-child(5) { animation-delay: 0.5s; }
-.gallery-item:nth-child(6) { animation-delay: 0.6s; }
-.gallery-item:nth-child(7) { animation-delay: 0.7s; }
-.gallery-item:nth-child(8) { animation-delay: 0.8s; }
-.gallery-item:nth-child(9) { animation-delay: 0.9s; }
-
-/* Стили для модального окна */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 999;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.9);
+  object-fit: cover;
+  border-radius: 24px;
+  z-index: 10;
+  transition: opacity 0.3s ease;
+  background-color: transparent;
+}
+
+/* Стили для превью и видео */
+.gallery-item .gallery-preview,
+.gallery-item .gallery-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  background-color: transparent;
+}
+
+/* Убрать трансформацию при наведении, так как она уже применяется к контейнеру */
+.gallery-item:hover {
+  transform: none;
+}
+
+.gallery-item:hover .gallery-preview {
+  transform: none;
+}
+
+.gallery-item:hover .gallery-video {
+  opacity: 1;
+}
+
+/* Видео превью */
+.video-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.3s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Категория (тег) */
+.item-category {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  z-index: 2;
+  transition: opacity 0.3s ease;
+}
+
+.item-category.funny {
+  background-color: rgba(255, 204, 213, 0.9);
+  color: #d67b89;
+}
+
+.item-category.cool {
+  background-color: rgba(255, 196, 208, 0.9);
+  color: #cc717e;
+}
+
+.item-category.cute {
+  background-color: rgba(255, 190, 203, 0.9);
+  color: #c16775;
+}
+
+/* 3D режим */
+.gallery-grid-3d {
+  perspective: 1000px;
+}
+
+.gallery-item-3d {
+  transform-style: preserve-3d;
+  transform: rotateX(5deg) rotateY(5deg);
+  box-shadow: 0 15px 25px rgba(255, 156, 173, 0.25);
+}
+
+.gallery-item-3d:hover {
+  transform: rotateX(0deg) rotateY(0deg) translateY(-10px);
+  box-shadow: 0 20px 30px rgba(255, 156, 173, 0.35);
+}
+
+/* Экранная загрузка для галереи */
+.gallery-loading {
+  padding: 40px 0;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.modal-content {
-  max-width: 90%;
-  max-height: 90vh;
-  margin: auto;
-  display: block;
+.love-loader-container {
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
 }
 
-.close {
+.loading-message {
+  margin-bottom: 15px;
+  color: #d67b89;
+  font-weight: 500;
+}
+
+.loading-bar-container {
+  width: 100%;
+  max-width: 600px;
+  height: 8px;
+  background-color: #f1f1f1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.loading-bar {
+  height: 100%;
+  background: linear-gradient(to right, #9c55ff, #c28aff);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.loading-percent {
+  font-size: 0.9rem;
+  color: #e57383;
+  font-weight: 600;
+}
+
+/* Удаление стилей модального окна */
+.modal-overlay,
+.modal-content,
+.modal-image,
+.modal-video-container,
+.modal-video,
+.modal-close,
+.modal-content:hover .video-controls {
+  display: none;
+}
+
+/* Video controls */
+.video-controls {
   position: absolute;
-  right: 25px;
-  top: 10px;
-  color: #f1f1f1;
-  font-size: 40px;
-  font-weight: bold;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .video-controls {
+  opacity: 1;
+}
+
+.video-control-button {
+  background: rgba(255, 156, 173, 0.9);
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  z-index: 1000;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(3px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  font-size: 16px;
 }
 
-.close:hover {
-  color: #bbb;
+.video-control-button:hover {
+  background: rgba(255, 124, 147, 1);
+  transform: scale(1.1);
 }
 
-/* Стили для контактной формы */
-.contact-form {
-  max-width: 500px;
+/* Video overlay with play button */
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .video-overlay {
+  opacity: 1;
+}
+
+.play-icon {
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.5));
+  transform: scale(1);
+  transition: transform 0.2s ease;
+}
+
+.gallery-item:hover .play-icon {
+  transform: scale(1.1);
+}
+
+/* Video error message */
+.video-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 400px;
+}
+
+.download-link {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 8px 15px;
+  background: linear-gradient(135deg, #9c55ff, #c28aff);
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.download-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Control buttons */
+.control-button {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.control-button:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: translateY(-2px);
+}
+
+/* Item info styling */
+.item-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  padding: 15px;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .item-info {
+  opacity: 1;
+}
+
+.item-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.item-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.item-category {
+  background: linear-gradient(135deg, #9c55ff, #c28aff);
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.item-type {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Gallery footer and contact button */
+.gallery-footer {
+  margin-top: 60px;
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+/* Кнопка "Посмотреть больше фотографий" */
+.view-more-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, #ff9cad, #ffb6c1);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 8px 20px rgba(255, 156, 173, 0.4);
+  margin: 0 auto;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.view-more-button::before {
+  content: "📷 ";
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.view-more-button:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 12px 25px rgba(255, 156, 173, 0.5), 0 0 20px rgba(255, 156, 173, 0.3);
+  background: linear-gradient(45deg, #ffb6c1, #ff9cad);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.view-more-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 5px 15px rgba(255, 156, 173, 0.4);
+}
+
+/* Кнопка загрузки фотографий */
+.contact-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, #9c55ff, #c28aff);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(156, 85, 255, 0.3);
+  margin: 40px auto;
+  outline: none;
+}
+
+.contact-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(156, 85, 255, 0.4);
+  background: linear-gradient(45deg, #a866ff, #cf9dff);
+}
+
+.contact-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 10px rgba(156, 85, 255, 0.3);
+}
+
+.upload-icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+.error-message {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #F44336;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  text-align: center;
+}
+
+/* Remove video overlay styles that we don't need anymore */
+.video-overlay,
+.item-info {
+  display: none;
+}
+
+/* 3D mode */
+.gallery-grid-3d .gallery-item {
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.gallery-grid-3d .gallery-item:hover {
+  transform: translateZ(20px) rotateX(5deg) rotateY(5deg);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Стили для формы контакта */
+.contact-form-container {
+  max-width: 700px;
   margin: 40px auto;
   padding: 30px;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(35, 35, 50, 0.9);
+  border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  color: white;
 }
 
-.contact-form h2 {
+.contact-form-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #fff;
   text-align: center;
+}
+
+.contact-form-description {
+  font-size: 16px;
   margin-bottom: 25px;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  font-size: 24px;
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  line-height: 1.5;
 }
 
 .form-group {
   margin-bottom: 20px;
-  position: relative;
 }
 
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  color: #333;
-  font-family: 'Montserrat Alternates', sans-serif;
+.form-label {
+  display: block;
   font-size: 16px;
-  transition: all 0.3s ease;
+  margin-bottom: 8px;
+  color: #fff;
+  font-weight: 500;
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-  color: #666;
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 16px;
+  transition: all 0.3s;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
+.form-input:focus, .form-textarea:focus {
   outline: none;
-  border-color: #ff6b6b;
-  box-shadow: 0 0 15px rgba(255, 107, 107, 0.3);
-  background: white;
+  border-color: #9c55ff;
+  box-shadow: 0 0 10px rgba(156, 85, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
 }
 
-.form-group textarea {
-  height: 120px;
+.form-textarea {
+  min-height: 120px;
   resize: vertical;
 }
 
-.submit-btn {
-  width: 100%;
+.file-input {
+  padding: 10px;
+  background: transparent;
+}
+
+.file-preview {
+  margin-top: 15px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
   padding: 15px;
-  background: linear-gradient(45deg, #ff6b6b, #ffc0cb);
-  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  min-height: 150px;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 300px;
   border-radius: 8px;
+}
+
+.video-preview-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 150px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 18px;
+}
+
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(45deg, #8c43ff, #b06bff);
+  border: none;
+  border-radius: 10px;
   color: white;
-  font-family: 'Montserrat Alternates', sans-serif;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  letter-spacing: 0.5px;
-}
-
-.submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
-  background: linear-gradient(45deg, #ff5252, #ff9eb5);
-}
-
-.file-upload-label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px dashed rgba(255, 107, 107, 0.5);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-bottom: 10px;
-}
-
-.file-upload-label:hover {
-  background: rgba(255, 255, 255, 1);
-  border-color: rgba(255, 107, 107, 0.8);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
-}
-
-.upload-icon {
-  font-size: 24px;
-  margin-right: 10px;
-}
-
-.upload-text {
-  font-family: 'Montserrat Alternates', sans-serif;
-  color: #333;
-}
-
-.file-input {
-  display: none;
-}
-
-.photo-preview {
-  width: 100%;
-  min-height: 0;
-  max-height: 200px;
+  transition: all 0.3s;
   margin-top: 10px;
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s ease;
 }
 
-.photo-preview img {
-  max-width: 100%;
-  max-height: 200px;
-  object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.submit-button:hover {
+  background: linear-gradient(45deg, #9c55ff, #c08cff);
+  box-shadow: 0 5px 15px rgba(156, 85, 255, 0.4);
+  transform: translateY(-2px);
 }
 
-.photo-preview .remove-photo {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 24px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font-size: 14px;
-  color: #ff5252;
-  transition: all 0.2s ease;
+.success-message {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(46, 213, 115, 0.2);
+  border-left: 4px solid #2ed573;
+  border-radius: 5px;
+  color: #fff;
 }
 
-.photo-preview-container {
-  position: relative;
-  display: inline-block;
+.error-message {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(255, 71, 87, 0.2);
+  border-left: 4px solid #ff4757;
+  border-radius: 5px;
+  color: #fff;
 }
 
-/* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
-  .gallery {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-    padding: 15px;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-  }
-
-  .contact-form {
-    margin: 20px;
+  .contact-form-container {
     padding: 20px;
+    margin: 30px 15px;
   }
 
-  .contact-form h2 {
-    font-size: 20px;
+  .contact-form-title {
+    font-size: 24px;
   }
 
-  .form-group input,
-  .form-group textarea {
+  .submit-button {
     padding: 12px;
-    font-size: 14px;
-  }
-
-  .submit-btn {
-    padding: 12px;
-    font-size: 14px;
   }
 }
 
-@media (max-width: 480px) {
-  .gallery {
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 10px;
-    padding: 10px;
-  }
+/* Улучшенные стили для загрузки */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+  border-radius: 24px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.error-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+  border-radius: 24px;
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid transparent;
+  border-top-color: #9c55ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Центрирование кнопки "Посмотреть больше фотографий" */
+.gallery-center {
+  display: flex;
+  justify-content: center;
+  margin: 40px auto;
+}
+
+/* Стили для кнопки навигации */
+.navigate-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, #a866ff, #c28aff);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 14px 28px;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 6px 18px rgba(156, 85, 255, 0.3);
+  margin: 20px auto;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.navigate-btn::before {
+  content: "→";
+  margin-right: 10px;
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+.navigate-btn:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(156, 85, 255, 0.4), 0 0 15px rgba(156, 85, 255, 0.2);
+  background: linear-gradient(45deg, #b877ff, #cf9dff);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.navigate-btn:hover::before {
+  transform: translateX(5px);
+}
+
+.navigate-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(156, 85, 255, 0.3);
 }

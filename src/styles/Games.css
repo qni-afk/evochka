@@ -1,27 +1,28 @@
+/* Стили для контейнера страницы игры */
 .page-container {
   min-height: 100vh;
-  padding: 20px;
-  padding-top: 80px; /* Добавляем отступ сверху для меню */
-  background: linear-gradient(135deg, #1a8d1a 0%, #145214 100%);
+  background: linear-gradient(135deg, #f4a0a9 0%, #ffc3cd 100%);
+  padding-top: 80px; /* Отступ верхний под навигацию */
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* Стили для игры "Сад мечты" */
 .dream-garden-container {
-  max-width: 800px;
   width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   text-align: center;
-  margin: 0 auto;
   position: relative;
   z-index: 1;
+  backdrop-filter: blur(10px);
 }
 
 .dream-garden-container h2 {
@@ -53,29 +54,30 @@
 
 .stat-item {
   padding: 8px 15px;
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  background: linear-gradient(135deg, #8e54e9 0%, #4776e6 100%);
   color: white;
   border-radius: 20px;
   font-weight: bold;
   font-size: 0.9em;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .garden {
   position: relative;
   width: 100%;
   height: 400px;
-  background: linear-gradient(135deg, rgba(168, 230, 207, 0.3) 0%, rgba(220, 237, 193, 0.3) 100%);
+  background: linear-gradient(135deg, rgba(230, 168, 215, 0.3) 0%, rgba(193, 193, 237, 0.3) 100%);
   border-radius: 15px;
   margin: 20px 0;
-  border: 2px dashed rgba(76, 175, 80, 0.3);
+  border: 2px dashed rgba(142, 84, 233, 0.3);
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .garden:hover {
-  border-color: rgba(76, 175, 80, 0.5);
-  box-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
+  border-color: rgba(142, 84, 233, 0.5);
+  box-shadow: 0 0 20px rgba(142, 84, 233, 0.2);
 }
 
 .flower {
@@ -147,7 +149,7 @@
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  background: linear-gradient(135deg, #8e54e9 0%, #4776e6 100%);
   color: white;
   padding: 15px 30px;
   border-radius: 30px;
@@ -168,14 +170,14 @@
 }
 
 .combination-hint {
-  background: rgba(168, 230, 207, 0.3);
+  background: rgba(193, 193, 237, 0.3);
   padding: 20px;
   border-radius: 10px;
   margin: 20px 0;
 }
 
 .combination-hint h3 {
-  color: #2c5530;
+  color: #4a305e;
   margin-bottom: 15px;
 }
 
@@ -198,22 +200,22 @@
 }
 
 .combinations-list h3 {
-  color: #2c5530;
+  color: #4a305e;
   margin-bottom: 15px;
 }
 
 .combination-item {
-  background: rgba(168, 230, 207, 0.2);
+  background: rgba(193, 193, 237, 0.2);
   padding: 10px;
   margin: 10px 0;
   border-radius: 8px;
-  color: #4a6670;
+  color: #4a4a70;
   transition: all 0.3s ease;
   animation: comboPopup 0.5s ease;
 }
 
 .combination-item:hover {
-  background: rgba(168, 230, 207, 0.4);
+  background: rgba(193, 193, 237, 0.4);
   transform: translateX(5px);
 }
 
@@ -222,11 +224,12 @@
   background: rgba(255, 255, 255, 0.95);
   padding: 40px;
   border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
 }
 
 .start-game-panel h2 {
-  color: #2c5530;
+  color: #4a305e;
   font-size: 2.5em;
   margin-bottom: 20px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
@@ -245,6 +248,23 @@
   gap: 10px;
   font-size: 1.3em;
   padding: 15px 40px;
+  background: linear-gradient(135deg, #8e54e9 0%, #4776e6 100%);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 8px 20px rgba(142, 84, 233, 0.3);
+}
+
+.start-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(142, 84, 233, 0.5);
+}
+
+.start-button:active {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(142, 84, 233, 0.4);
 }
 
 .button-icon {
@@ -561,7 +581,7 @@
 }
 
 button {
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  background: linear-gradient(135deg, #7761E8 0%, #e455bc 100%);
   color: white;
   border: none;
   padding: 12px 24px;
@@ -751,7 +771,7 @@ button:active {
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgb(139, 99, 235);
   border-radius: 15px;
   max-width: 100%;
   box-sizing: border-box;
@@ -759,36 +779,21 @@ button:active {
 
 .grid-cell {
   aspect-ratio: 1;
-  background: rgba(220, 237, 193, 0.5);
-  border: 2px dashed rgba(76, 175, 80, 0.3);
+  background: rgba(255, 255, 255, 0.4);
   border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: all 0.3s ease;
+  cursor: pointer;
   position: relative;
-}
-
-.grid-cell.can-merge {
-  background: rgba(76, 175, 80, 0.2);
-  border-color: #4CAF50;
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
-}
-
-.grid-cell.selected {
-  background: rgba(168, 230, 207, 0.8);
-  border-color: #4CAF50;
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
 }
 
 .grid-cell:hover {
-  background: rgba(168, 230, 207, 0.7);
-}
-
-.grid-cell.filled {
-  border-style: solid;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
 }
 
 .grid-item {
@@ -903,18 +908,35 @@ button:active {
   margin-bottom: 20px;
 }
 
+.energy-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
 .energy-bar {
-  background: rgba(0, 0, 0, 0.1);
-  height: 20px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.4);
   border-radius: 10px;
   overflow: hidden;
   position: relative;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .energy-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4CAF50, #8BC34A);
-  transition: width 0.3s ease;
+  background: linear-gradient(90deg, #8e54e9, #4776e6);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  box-shadow: 0 0 10px rgba(142, 84, 233, 0.5);
+  animation: energyPulse 2s infinite;
+}
+
+@keyframes energyPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
 }
 
 .energy-text {
@@ -928,72 +950,65 @@ button:active {
   font-size: 0.9em;
 }
 
-/* Анимации для комбинаций */
-@keyframes comboPopup {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-/* Стили для энергии и магазина */
-.energy-container {
-  margin: 15px 0;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 15px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
 .energy-actions {
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
+  flex-wrap: wrap;
   justify-content: center;
-  margin-top: 10px;
 }
 
 .energy-button, .shop-button {
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9em;
+  padding: 10px 15px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 5px;
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .energy-button {
-  background: linear-gradient(135deg, #ffd54f 0%, #ffb300 100%);
+  background: linear-gradient(90deg, #8e54e9, #4776e6);
+  color: white;
+}
+
+.energy-button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(142, 84, 233, 0.3);
 }
 
 .energy-button:disabled {
-  background: linear-gradient(135deg, #cccccc 0%, #999999 100%);
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
 .shop-button {
-  background: linear-gradient(135deg, #26c6da 0%, #00acc1 100%);
+  background: linear-gradient(90deg, #ff55a3, #9c55ff);
+  color: white;
 }
 
-.shop-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Убедимся, что модальное окно всегда поверх */
-  padding: 80px 20px 20px 20px; /* Добавляем отступ сверху для меню */
-  box-sizing: border-box;
+.shop-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(156, 85, 255, 0.3);
+}
+
+.shop-container {
+  margin-top: 20px;
+  background: rgba(35, 35, 50, 0.95);
+  border-radius: 15px;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  width: 100%;
+  max-width: 800px;
+  overflow-y: auto;
+  max-height: 80vh;
 }
 
 .shop-content {

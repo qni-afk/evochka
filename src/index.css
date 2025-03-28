@@ -95,10 +95,12 @@ body {
   object-fit: cover;
   opacity: 0;
   transition: opacity 1.5s ease-in-out;
+  will-change: opacity;
 }
 
 .video-background video.active {
-  opacity: 1;
+  opacity: 1 !important;
+  z-index: 1;
 }
 
 .video-background::after {
@@ -131,13 +133,13 @@ body {
 
 .animate__title {
   opacity: 0;
-  background: linear-gradient(45deg, rgba(255, 170, 255, 0.977), Tomato, Violet);
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
+  background: linear-gradient(45deg, rgba(147, 112, 219, 0.9), rgba(192, 145, 255, 0.9), rgba(147, 112, 219, 0.9));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   transform: translateY(50px);
   font-size: 3.5rem;
   font-weight: 900;
-  text-shadow: 0 0 50px red;
+  text-shadow: 0 0 50px rgba(147, 112, 219, 0.5);
 }
 
 .animate__text {
@@ -234,81 +236,6 @@ body {
 .gallery-image:hover {
   transform: scale(1.05);
   box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-}
-
-.music-controls {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  display: flex;
-  align-items: center;
-  z-index: 1000;
-  gap: 10px;
-}
-
-.music-btn {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-}
-
-.loader {
-  width: 25px;
-  height: 25px;
-  display: inline-block;
-  position: relative;
-  opacity: 0.5;
-  transition: opacity 0.3s ease;
-}
-
-.loader::after,
-.loader::before {
-  content: '';
-  width: 5px;
-  height: 20px;
-  background: white;
-  position: absolute;
-  border-radius: 5px;
-  animation: l7 0.5s infinite alternate;
-  top: 0;
-  left: 4px;
-}
-
-.loader::before {
-  height: 10px;
-  animation-delay: 0.1s;
-  left: 10px;
-}
-
-@keyframes l7 {
-  0% { transform: scaleY(0.5); }
-  100% { transform: scaleY(1); }
-}
-
-.music-btn.playing .loader {
-  opacity: 1;
-}
-
-.volume-slider-container {
-  width: 0;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(15px);
-  border-radius: 20px;
-  padding: 0;
-  height: 40px;
-  display: flex;
-  align-items: center;
 }
 
 .hearts {

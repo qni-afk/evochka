@@ -454,20 +454,20 @@ function Games() {
                     onClick={collectDailyEnergy}
                     disabled={dailyEnergyCollected}
                   >
-                    {dailyEnergyCollected ? '✓' : '🎁'} Ежедневная энергия
+                    {dailyEnergyCollected ? '✅' : '🎁'} Ежедневная энергия
                   </button>
                   <button
                     className="energy-button"
                     onClick={watchAdForEnergy}
                     disabled={Date.now() - lastAdWatchTime < 300000}
                   >
-                    📺 Смотреть рекламу (+30 энергии)
+                    ▶ Смотреть рекламу (+30 энергии)
                   </button>
                   <button
                     className="shop-button"
                     onClick={() => setShowShop(!showShop)}
                   >
-                    🏪 Магазин
+                    🛒 Магазин
                   </button>
                 </div>
               </div>
@@ -483,12 +483,12 @@ function Games() {
             </div>
 
             {showShop && (
-              <div className="shop-modal">
+              <div className="shop-container">
                 <div className="shop-content">
-                  <h3>🏪 Магазин</h3>
+                  <h3>🛒 Магазин</h3>
 
                   <div className="shop-section">
-                    <h4 className="shop-section-title">👑 Специальные предложения</h4>
+                    <h4 className="shop-section-title">🏆 Специальные предложения</h4>
                     <p className="shop-section-description">
                       Отправьте фотографию через бота, чтобы получить особые награды
                     </p>
@@ -507,7 +507,7 @@ function Games() {
                               </div>
                               <div className="shop-item-cost">
                                 {processingPurchase && currentItem?.id === item.id
-                                  ? '📤 Загрузка...'
+                                  ? '🖼 Загрузка...'
                                   : '📸 Отправить фото'}
                               </div>
                             </div>
@@ -590,7 +590,7 @@ function Games() {
                   </div>
 
                   <button className="close-shop" onClick={() => setShowShop(false)}>
-                    Закрыть
+                    ❌ Закрыть
                   </button>
                 </div>
               </div>

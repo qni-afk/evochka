@@ -2,25 +2,26 @@
 .navbar {
   position: fixed !important;
   top: 20px !important;
-  left: 0 !important;
-  right: 0 !important;
-  margin: 0 auto !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   width: fit-content !important;
-  z-index: 1000;
-  background: rgba(255, 74, 63, 0.31);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-radius: 30px;
-  padding: 12px 30px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  will-change: transform;
+  z-index: 1000 !important;
+  background: rgba(147, 112, 219, 0.31) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
+  border-radius: 30px !important;
+  padding: 12px 30px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(156, 85, 255, 0.2) !important;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  will-change: transform !important;
+  margin: 0 auto !important;
+  right: auto !important;
 }
 
 .navbar:hover {
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(156, 85, 255, 0.3) !important;
+  transform: translateX(-50%) translateY(-2px) !important;
 }
 
 .nav-container {
@@ -59,7 +60,13 @@
   padding: 0;
 }
 
-.nav-list button {
+/* Стили для навигационных ссылок */
+.nav-list li {
+  position: relative;
+}
+
+.nav-list a {
+  display: inline-block;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 30px;
@@ -74,10 +81,11 @@
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
   letter-spacing: 1px;
   font-weight: 500;
+  text-decoration: none;
 }
 
 /* Эффект свечения при наведении */
-.nav-list button::before {
+.nav-list a::before {
   content: '';
   position: absolute;
   top: -50%;
@@ -95,24 +103,25 @@
   z-index: -1;
 }
 
-.nav-list button:hover::before {
+.nav-list a:hover::before {
   transform: rotate(45deg) translate(100%, 100%);
 }
 
-/* Стили для активной кнопки */
-.nav-list button.active {
-  background: linear-gradient(135deg, rgba(255, 105, 180, 0.4), rgba(147, 112, 219, 0.4));
-  border-color: rgba(255, 255, 255, 0.5);
+/* Стили для активного элемента */
+.nav-list li.active a {
+  background: linear-gradient(135deg, rgba(147, 112, 219, 0.6), rgba(192, 145, 255, 0.6)) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
   box-shadow:
-    0 10px 20px rgba(255, 105, 180, 0.2),
-    0 0 15px rgba(255, 105, 180, 0.3);
-  transform: scale(1.05) translateZ(0);
-  font-weight: 600;
-  position: relative;
-  color: white;
+    0 10px 20px rgba(156, 85, 255, 0.3) !important,
+    0 0 15px rgba(156, 85, 255, 0.4) !important;
+  transform: scale(1.05) translateZ(0) !important;
+  font-weight: 600 !important;
+  position: relative !important;
+  color: white !important;
+  animation: pulse 2s infinite !important;
 }
 
-.nav-list button.active::after {
+.nav-list li.active a::after {
   content: '';
   position: absolute;
   bottom: -3px;
@@ -123,52 +132,47 @@
   background: white;
   border-radius: 50%;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-  animation: pulse 1.5s infinite;
 }
 
-.nav-list button:hover {
+.nav-list a:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-5px) scale(1.05) translateZ(0);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 25px rgba(156, 85, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.4);
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-.nav-list button:active {
+.nav-list a:active {
   transform: translateY(0) scale(0.98) translateZ(0);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px rgba(156, 85, 255, 0.1);
   transition: all 0.1s ease;
 }
 
 /* Медиа-запрос для мобильных устройств */
 @media (max-width: 768px) {
   .navbar {
-    padding: 10px 20px;
-    top: 10px;
+    padding: 10px 20px !important;
+    top: 10px !important;
   }
 
   .nav-list {
     gap: 10px;
   }
 
-  .nav-list button {
+  .nav-list a {
     font-size: 13px;
     padding: 8px 15px;
   }
 }
 
 /* Добавляем подсветку текста */
-.nav-list button {
+.nav-list a {
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 /* Добавляем эффект пульсации для активной кнопки */
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
-}
-
-.nav-list button.active {
-  animation: pulse 2s infinite;
+  0% { box-shadow: 0 0 0 0 rgba(156, 85, 255, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(156, 85, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(156, 85, 255, 0); }
 }

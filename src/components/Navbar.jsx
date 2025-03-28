@@ -8,25 +8,17 @@ function Navbar() {
     <nav className="navbar">
       <div className="nav-container">
         <ul className="nav-list">
-          <li>
-            <Link to="/story">
-              <button className={location.pathname === '/story' ? 'active' : ''}>Story</button>
-            </Link>
+          <li className={location.pathname === '/eva' ? 'active' : ''}>
+            <Link to="/eva">Eva</Link>
           </li>
-          <li>
-            <Link to="/">
-              <button className={location.pathname === '/' ? 'active' : ''}>About us</button>
-            </Link>
+          <li className={location.pathname === '/' ? 'active' : ''}>
+            <Link to="/">About us</Link>
           </li>
-          <li>
-            <Link to="/gallery">
-              <button className={location.pathname === '/gallery' ? 'active' : ''}>Gallery</button>
-            </Link>
+          <li className={location.pathname === '/gallery' ? 'active' : ''}>
+            <Link to="/gallery">Gallery</Link>
           </li>
-          <li>
-            <Link to="/games">
-              <button className={location.pathname === '/games' ? 'active' : ''}>Games</button>
-            </Link>
+          <li className={location.pathname === '/games' ? 'active' : ''}>
+            <Link to="/games">Games</Link>
           </li>
         </ul>
       </div>

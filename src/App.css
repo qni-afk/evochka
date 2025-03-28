@@ -52,34 +52,6 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
-.music-controls:hover .volume-slider-container {
-  width: 100px;
-  padding: 0 15px;
-}
-
-#volume-slider {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  outline: none;
-}
-
-#volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-#volume-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-}
-
 /* Адаптация для мобильных устройств */
 @media (max-width: 768px) {
   .navbar {
