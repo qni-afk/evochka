@@ -1,25 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import '../styles/Eva.css';
-import { FaHeart, FaStar, FaCamera, FaGift, FaMagic, FaRegSmile } from 'react-icons/fa';
-import { GiDiamondRing, GiButterflyFlower, GiPartyPopper } from 'react-icons/gi';
+import { FaHeart, FaStar, FaCamera, FaGift, FaMagic, FaRegSmile, FaList, FaCrown, FaCheck, FaPalette } from 'react-icons/fa';
+import { GiDiamondRing, GiButterflyFlower, GiPartyPopper, GiPalmTree, GiCupcake, GiShoppingBag } from 'react-icons/gi';
+import { BsEmojiHeartEyes, BsStars } from 'react-icons/bs';
 
 const Eva = () => {
-  const [activeTab, setActiveTab] = useState('gallery');
+  const [activeTab, setActiveTab] = useState('features');
   const [animation, setAnimation] = useState(false);
   const [hearts, setHearts] = useState([]);
   const [moodRating, setMoodRating] = useState(0);
   const [wishes, setWishes] = useState([
-    { id: 1, text: 'Trip to the sea', completed: false },
-    { id: 2, text: 'Date at a beautiful restaurant', completed: true },
-    { id: 3, text: 'New dress', completed: false },
-    { id: 4, text: 'Wedding', completed: false },
+    { id: 1, text: 'Провести день на природе', completed: false },
+    { id: 2, text: 'Посетить новый ресторан', completed: false },
+    { id: 3, text: 'Сходить в кино на премьеру', completed: true },
   ]);
   const [newWish, setNewWish] = useState('');
   const [confetti, setConfetti] = useState(false);
+  const [features, setFeatures] = useState([
+    { id: 1, text: 'Поездка в парк аттракционов', emoji: '🎡', liked: false, priority: 'high' },
+    { id: 2, text: 'Совместная готовка', emoji: '👩‍🍳', liked: true, priority: 'medium' },
+    { id: 3, text: 'Прогулка по набережной', emoji: '🌅', liked: false, priority: 'low' },
+    { id: 4, text: 'Посмотреть новый фильм', emoji: '🎬', liked: true, priority: 'medium' },
+  ]);
+  const [newFeature, setNewFeature] = useState('');
+  const [selectedEmoji, setSelectedEmoji] = useState('❤️');
+  const [filterPriority, setFilterPriority] = useState('all');
+  const [colorTheme, setColorTheme] = useState('pink');
+  const [showColorPicker, setShowColorPicker] = useState(false);
   const evaRef = useRef(null);
   const containerRef = useRef(null);
+  const emojiOptions = ['❤️', '🎮', '🎬', '🎭', '🎨', '🎸', '🏄‍♀️', '🚴‍♀️', '🧗‍♀️', '🏂', '🏕️', '🌅', '🍿', '🍕', '🍦', '🍹', '👗', '💃', '🎡', '🎯'];
 
   const memories = [
     { id: 1, title: 'First meeting', date: '09.12.2023', image: '/images/photo_2025-02-28_01-09-21.jpg' },
@@ -41,6 +53,40 @@ const Eva = () => {
     'I love your laughter',
     'You are my inspiration',
     'You are perfect in every way'
+  ];
+
+  const colorThemes = {
+    pink: {
+      primary: '#ff6b9c',
+      secondary: '#ff9cad',
+      light: '#fff0f6',
+      accent: '#ffcd3c'
+    },
+    purple: {
+      primary: '#9c55ff',
+      secondary: '#c28aff',
+      light: '#f5f0ff',
+      accent: '#ffcd3c'
+    },
+    teal: {
+      primary: '#00c9a7',
+      secondary: '#4adec9',
+      light: '#e6fff8',
+      accent: '#ffa64d'
+    },
+    blue: {
+      primary: '#5271ff',
+      secondary: '#7892ff',
+      light: '#f0f4ff',
+      accent: '#ffcd3c'
+    }
+  };
+
+  const themes = [
+    { name: 'pink', class: 'theme-pink' },
+    { name: 'purple', class: 'theme-purple' },
+    { name: 'teal', class: 'theme-teal' },
+    { name: 'blue', class: 'theme-blue' },
   ];
 
   const handleTabChange = (tab) => {
@@ -99,6 +145,56 @@ const Eva = () => {
     }
   };
 
+  const toggleFeatureLike = (id) => {
+    setFeatures(features.map(feature =>
+      feature.id === id ? { ...feature, liked: !feature.liked } : feature
+    ));
+  };
+
+  const changePriority = (id) => {
+    const priorities = ['low', 'medium', 'high'];
+    setFeatures(features.map(feature => {
+      if (feature.id === id) {
+        const currentIndex = priorities.indexOf(feature.priority);
+        const nextIndex = (currentIndex + 1) % priorities.length;
+        return { ...feature, priority: priorities[nextIndex] };
+      }
+      return feature;
+    }));
+  };
+
+  const addFeature = () => {
+    if (newFeature.trim() !== '') {
+      setFeatures([
+        ...features,
+        {
+          id: Date.now(),
+          text: newFeature,
+          emoji: selectedEmoji,
+          liked: false,
+          priority: 'medium'
+        }
+      ]);
+      setNewFeature('');
+    }
+  };
+
+  const getFilteredFeatures = () => {
+    if (filterPriority === 'all') return features;
+    return features.filter(feature => feature.priority === filterPriority);
+  };
+
+  const changeColorTheme = (theme) => {
+    setColorTheme(theme);
+    setShowColorPicker(false);
+
+    // Dynamically update CSS variables
+    document.documentElement.style.setProperty('--primary-color', colorThemes[theme].primary);
+    document.documentElement.style.setProperty('--secondary-color', colorThemes[theme].secondary);
+    document.documentElement.style.setProperty('--light-color', colorThemes[theme].light);
+    document.documentElement.style.setProperty('--accent-color', colorThemes[theme].accent);
+  };
+
   const randomCompliment = () => {
     return compliments[Math.floor(Math.random() * compliments.length)];
   };
@@ -111,11 +207,99 @@ const Eva = () => {
       }
     }, 300);
 
+    // Initialize default theme
+    changeColorTheme(colorTheme);
+
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    // Применяем тему при загрузке
+    document.body.className = `theme-${colorTheme}`;
+
+    return () => {
+      document.body.className = '';
+    };
+  }, [colorTheme]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setAnimation(true);
+    }, 500);
+  }, []);
+
+  const handleHeartClick = (e) => {
+    const heartId = Date.now();
+    const x = e.clientX;
+    const y = e.clientY;
+    setHearts((prevHearts) => [...prevHearts, { id: heartId, x, y }]);
+
+    setTimeout(() => {
+      setHearts((prevHearts) => prevHearts.filter((heart) => heart.id !== heartId));
+    }, 1000);
+  };
+
+  const generateConfetti = () => {
+    setConfetti(true);
+    setTimeout(() => {
+      setConfetti(false);
+    }, 5000);
+  };
+
+  const handleWishToggle = (id) => {
+    const updatedWishes = wishes.map((wish) =>
+      wish.id === id ? { ...wish, completed: !wish.completed } : wish
+    );
+
+    setWishes(updatedWishes);
+
+    if (!wishes.find((wish) => wish.id === id).completed) {
+      generateConfetti();
+    }
+  };
+
+  const handleWishSubmit = (e) => {
+    e.preventDefault();
+    if (newWish.trim() === '') return;
+
+    const id = wishes.length ? Math.max(...wishes.map((wish) => wish.id)) + 1 : 1;
+    setWishes([...wishes, { id, text: newWish, completed: false }]);
+    setNewWish('');
+  };
+
+  const renderConfetti = () => {
+    if (!confetti) return null;
+
+    const confettiElements = [];
+    const colors = ['#ff6b9c', '#ffcd3c', '#ff9cad', '#ffd1dc', '#fff0f6'];
+
+    for (let i = 0; i < 100; i++) {
+      const left = Math.random() * 100;
+      const width = Math.random() * 10 + 5;
+      const height = Math.random() * 10 + 5;
+      const backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      const delay = Math.random() * 5;
+
+      confettiElements.push(
+        <div
+          key={i}
+          className="confetti"
+          style={{
+            left: `${left}%`,
+            width: `${width}px`,
+            height: `${height}px`,
+            backgroundColor,
+            animationDelay: `${delay}s`,
+          }}
+        />
+      );
+    }
+
+    return confettiElements;
+  };
+
   return (
-    <div className="eva-page" ref={containerRef} onClick={addHearts}>
+    <div className={`eva-page ${colorTheme}`} ref={containerRef} onClick={handleHeartClick}>
       <Navbar />
 
       {hearts.map(heart => (
@@ -144,24 +328,10 @@ const Eva = () => {
         </motion.div>
       ))}
 
-      {confetti && (
-        <div className="confetti-container">
-          {Array(50).fill().map((_, i) => (
-            <div
-              key={i}
-              className="confetti"
-              style={{
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`,
-                backgroundColor: `hsl(${Math.random() * 360}, 100%, 50%)`
-              }}
-            />
-          ))}
-        </div>
-      )}
+      <div className="confetti-container">{renderConfetti()}</div>
 
       <header className="eva-header">
-        <div className="profile-container" ref={evaRef}>
+        <div className={`profile-container ${animation ? 'loaded' : ''}`} ref={evaRef}>
           <div className="eva-profile">
             <img src="/images/eva white.jpg" alt="Eva" className="profile-pic" />
             <div className="profile-info">
@@ -174,7 +344,10 @@ const Eva = () => {
                     <FaStar
                       key={star}
                       className={star <= moodRating ? 'star active' : 'star'}
-                      onClick={() => setMoodRating(star)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMoodRating(star);
+                      }}
                     />
                   ))}
                 </div>
@@ -183,6 +356,30 @@ const Eva = () => {
           </div>
         </div>
       </header>
+
+      <div className="theme-switcher">
+        <button
+          className="theme-button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowColorPicker(!showColorPicker);
+          }}
+          title="Change theme color"
+        >
+          <FaPalette />
+        </button>
+        {showColorPicker && (
+          <div className="color-picker" onClick={(e) => e.stopPropagation()}>
+            {themes.map(theme => (
+              <button
+                key={theme.name}
+                className={`color-option ${theme.name}`}
+                onClick={() => changeColorTheme(theme.name)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className="tabs">
         <button
@@ -196,6 +393,12 @@ const Eva = () => {
           onClick={() => handleTabChange('wishes')}
         >
           <FaGift /> Wishes
+        </button>
+        <button
+          className={activeTab === 'features' ? 'active' : ''}
+          onClick={() => handleTabChange('features')}
+        >
+          <FaList /> Features
         </button>
         <button
           className={activeTab === 'compliments' ? 'active' : ''}
@@ -236,29 +439,151 @@ const Eva = () => {
         {activeTab === 'wishes' && (
           <div className="wishes-section">
             <h2>Wish List <FaGift /></h2>
-            <div className="wish-input">
+            <form className="wish-input" onSubmit={handleWishSubmit}>
               <input
                 type="text"
                 placeholder="Add a new wish..."
                 value={newWish}
                 onChange={(e) => setNewWish(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && addWish()}
               />
-              <button onClick={addWish}>Add</button>
-            </div>
+              <button type="submit">Add</button>
+            </form>
             <ul className="wishes-list">
               {wishes.map((wish) => (
                 <motion.li
                   key={wish.id}
                   className={wish.completed ? 'completed' : ''}
                   whileHover={{ scale: 1.02 }}
-                  onClick={() => toggleWish(wish.id)}
+                  onClick={() => handleWishToggle(wish.id)}
                 >
                   <span className="wish-text">{wish.text}</span>
                   <span className="wish-check">{wish.completed ? '✓' : '○'}</span>
                 </motion.li>
               ))}
             </ul>
+          </div>
+        )}
+
+        {activeTab === 'features' && (
+          <div className="features-section">
+            <h2>Feature List <GiPalmTree /></h2>
+
+            <div className="feature-filters">
+              <p>Filter by priority:</p>
+              <div className="priority-buttons">
+                <button
+                  className={filterPriority === 'all' ? 'active' : ''}
+                  onClick={() => setFilterPriority('all')}
+                >
+                  All
+                </button>
+                <button
+                  className={`${filterPriority === 'high' ? 'active high' : ''}`}
+                  onClick={() => setFilterPriority('high')}
+                >
+                  High <FaCrown />
+                </button>
+                <button
+                  className={`${filterPriority === 'medium' ? 'active medium' : ''}`}
+                  onClick={() => setFilterPriority('medium')}
+                >
+                  Medium <BsStars />
+                </button>
+                <button
+                  className={`${filterPriority === 'low' ? 'active low' : ''}`}
+                  onClick={() => setFilterPriority('low')}
+                >
+                  Low <GiCupcake />
+                </button>
+              </div>
+            </div>
+
+            <div className="feature-input">
+              <div className="input-group">
+                <input
+                  type="text"
+                  placeholder="Add a new fun activity..."
+                  value={newFeature}
+                  onChange={(e) => setNewFeature(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && addFeature()}
+                />
+                <div className="emoji-selector">
+                  <span className="selected-emoji">{selectedEmoji}</span>
+                  <div className="emoji-dropdown">
+                    {emojiOptions.map(emoji => (
+                      <span
+                        key={emoji}
+                        className="emoji-option"
+                        onClick={() => setSelectedEmoji(emoji)}
+                      >
+                        {emoji}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <button onClick={addFeature}>Add</button>
+            </div>
+
+            <motion.ul
+              className="features-list"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              {getFilteredFeatures().map((feature) => (
+                <motion.li
+                  key={feature.id}
+                  className={`feature-item priority-${feature.priority}`}
+                  whileHover={{
+                    scale: 1.02,
+                    backgroundColor: feature.liked ? 'rgba(255, 182, 193, 0.3)' : 'rgba(255, 245, 247, 0.5)'
+                  }}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                >
+                  <div className="feature-content">
+                    <span className="feature-emoji">{feature.emoji}</span>
+                    <span className="feature-text">{feature.text}</span>
+                  </div>
+                  <div className="feature-actions">
+                    <button
+                      className={`priority-indicator ${feature.priority}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        changePriority(feature.id);
+                      }}
+                      title={`Priority: ${feature.priority} (click to change)`}
+                    >
+                      {feature.priority === 'high' && <FaCrown />}
+                      {feature.priority === 'medium' && <BsStars />}
+                      {feature.priority === 'low' && <GiCupcake />}
+                    </button>
+                    <button
+                      className={`like-button ${feature.liked ? 'liked' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFeatureLike(feature.id);
+                      }}
+                    >
+                      {feature.liked ? <BsEmojiHeartEyes /> : <FaHeart />}
+                    </button>
+                  </div>
+                </motion.li>
+              ))}
+            </motion.ul>
+
+            <div className="feature-info">
+              <div className="info-card">
+                <GiShoppingBag className="info-icon" />
+                <div className="info-text">
+                  <h3>Fun Activities Together</h3>
+                  <p>Create a list of fun activities we can do together. Set priorities, mark your favorites, and let's make memories!</p>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
