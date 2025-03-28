@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import '../styles/Eva.css';
-import { FaHeart, FaStar, FaCamera, FaGift, FaMagic, FaRegSmile, FaList, FaCrown, FaCheck, FaPalette } from 'react-icons/fa';
+import { FaHeart, FaStar, FaCamera, FaGift, FaMagic, FaRegSmile, FaList, FaCrown, FaCheck, FaPalette, FaLanguage } from 'react-icons/fa';
 import { GiDiamondRing, GiButterflyFlower, GiPartyPopper, GiPalmTree, GiCupcake, GiShoppingBag } from 'react-icons/gi';
 import { BsEmojiHeartEyes, BsStars } from 'react-icons/bs';
 
@@ -11,18 +11,19 @@ const Eva = () => {
   const [animation, setAnimation] = useState(false);
   const [hearts, setHearts] = useState([]);
   const [moodRating, setMoodRating] = useState(0);
+  const [language, setLanguage] = useState('en'); // 'en' или 'ru'
   const [wishes, setWishes] = useState([
-    { id: 1, text: 'Провести день на природе', completed: false },
-    { id: 2, text: 'Посетить новый ресторан', completed: false },
-    { id: 3, text: 'Сходить в кино на премьеру', completed: true },
+    { id: 1, text: 'Провести день на природе', text_en: 'Spend a day outdoors', completed: false },
+    { id: 2, text: 'Посетить новый ресторан', text_en: 'Visit a new restaurant', completed: false },
+    { id: 3, text: 'Сходить в кино на премьеру', text_en: 'Go to a movie premiere', completed: true },
   ]);
   const [newWish, setNewWish] = useState('');
   const [confetti, setConfetti] = useState(false);
   const [features, setFeatures] = useState([
-    { id: 1, text: 'Поездка в парк аттракционов', emoji: '🎡', liked: false, priority: 'high' },
-    { id: 2, text: 'Совместная готовка', emoji: '👩‍🍳', liked: true, priority: 'medium' },
-    { id: 3, text: 'Прогулка по набережной', emoji: '🌅', liked: false, priority: 'low' },
-    { id: 4, text: 'Посмотреть новый фильм', emoji: '🎬', liked: true, priority: 'medium' },
+    { id: 1, text: 'Поездка в парк аттракционов', text_en: 'Trip to an amusement park', emoji: '🎡', liked: false, priority: 'high' },
+    { id: 2, text: 'Совместная готовка', text_en: 'Cooking together', emoji: '👩‍🍳', liked: true, priority: 'medium' },
+    { id: 3, text: 'Прогулка по набережной', text_en: 'Walking along the embankment', emoji: '🌅', liked: false, priority: 'low' },
+    { id: 4, text: 'Посмотреть новый фильм', text_en: 'Watch a new movie', emoji: '🎬', liked: true, priority: 'medium' },
   ]);
   const [newFeature, setNewFeature] = useState('');
   const [selectedEmoji, setSelectedEmoji] = useState('❤️');
@@ -34,26 +35,94 @@ const Eva = () => {
   const emojiOptions = ['❤️', '🎮', '🎬', '🎭', '🎨', '🎸', '🏄‍♀️', '🚴‍♀️', '🧗‍♀️', '🏂', '🏕️', '🌅', '🍿', '🍕', '🍦', '🍹', '👗', '💃', '🎡', '🎯'];
 
   const memories = [
-    { id: 1, title: 'First meeting', date: '09.12.2023', image: '/images/photo_2025-02-28_01-09-21.jpg' },
-    { id: 2, title: "New Year's Eve", date: '31.12.2023', image: '/images/eva white.jpg' },
-    { id: 3, title: "Eva's birthday", date: '05.03.2023', image: '/images/eva blue.jpg' },
-    { id: 4, title: 'My birthday', date: '08.08.2024', image: '/images/eva sex.jpg' },
-    { id: 5, title: 'One year together', date: '09.12.2024', image: '/images/image_2025-02-28_01-11-28.png' },
-    { id: 6, title: 'Two years together', date: '09.12.2025', image: '/images/photo_2024-06-17_22-32-56.jpg' },
+    { id: 1, title: 'First meeting', title_ru: 'Первая встреча', date: '09.12.2023', image: '/images/photo_2025-02-28_01-09-21.jpg' },
+    { id: 2, title: "New Year's Eve", title_ru: 'Новогодняя ночь', date: '31.12.2023', image: '/images/eva white.jpg' },
+    { id: 3, title: "Eva's birthday", title_ru: 'День рождения Евы', date: '05.03.2023', image: '/images/eva blue.jpg' },
+    { id: 4, title: 'My birthday', title_ru: 'Мой день рождения', date: '08.08.2024', image: '/images/eva sex.jpg' },
+    { id: 5, title: 'One year together', title_ru: 'Год вместе', date: '09.12.2024', image: '/images/image_2025-02-28_01-11-28.png' },
+    { id: 6, title: 'Two years together', title_ru: 'Два года вместе', date: '09.12.2025', image: '/images/photo_2024-06-17_22-32-56.jpg' },
   ];
 
-  const compliments = [
-    'You are the most beautiful!',
-    'Your smile brightens my day',
-    'You are my favorite girl',
-    'I am the happiest with you',
-    'You are infinitely gorgeous',
-    'You make me better',
-    'Your eyes are like two stars',
-    'I love your laughter',
-    'You are my inspiration',
-    'You are perfect in every way'
-  ];
+  const compliments = {
+    en: [
+      'You are the most beautiful!',
+      'Your smile brightens my day',
+      'You are my favorite girl',
+      'I am the happiest with you',
+      'You are infinitely gorgeous',
+      'You make me better',
+      'Your eyes are like two stars',
+      'I love your laughter',
+      'You are my inspiration',
+      'You are perfect in every way'
+    ],
+    ru: [
+      'Ты самая красивая!',
+      'Твоя улыбка освещает мой день',
+      'Ты моя любимая девушка',
+      'Я счастливее всего рядом с тобой',
+      'Ты бесконечно прекрасна',
+      'Ты делаешь меня лучше',
+      'Твои глаза как две звезды',
+      'Обожаю твой смех',
+      'Ты моё вдохновение',
+      'Ты идеальна во всём'
+    ]
+  };
+
+  // Тексты для интерфейса в зависимости от языка
+  const translations = {
+    en: {
+      profileTitle: 'My sweet girl',
+      moodToday: 'Mood today:',
+      gallery: 'Gallery',
+      wishes: 'Wishes',
+      features: 'Features',
+      compliments: 'Compliments',
+      featureList: 'Feature List',
+      filterByPriority: 'Filter by priority:',
+      all: 'All',
+      high: 'High',
+      medium: 'Medium',
+      low: 'Low',
+      addNewActivity: 'Add a new fun activity...',
+      add: 'Add',
+      funActivities: 'Fun Activities Together',
+      funActivitiesDesc: 'Create a list of fun activities we can do together. Set priorities, mark your favorites, and let\'s make memories!',
+      memories: 'Our Memories',
+      wishList: 'Wish List',
+      addNewWish: 'Add a new wish...',
+      newCompliment: 'New Compliment',
+      loveNoteText: 'You are the best thing that has ever happened to me. Every day with you is a little miracle.',
+      withLove: 'With love forever',
+    },
+    ru: {
+      profileTitle: 'Моя любимая девочка',
+      moodToday: 'Настроение сегодня:',
+      gallery: 'Галерея',
+      wishes: 'Желания',
+      features: 'Занятия',
+      compliments: 'Комплименты',
+      featureList: 'Список занятий',
+      filterByPriority: 'Фильтр по приоритету:',
+      all: 'Все',
+      high: 'Высокий',
+      medium: 'Средний',
+      low: 'Низкий',
+      addNewActivity: 'Добавить новое занятие...',
+      add: 'Добавить',
+      funActivities: 'Интересные занятия вместе',
+      funActivitiesDesc: 'Создай список занятий, которые мы можем делать вместе. Установи приоритеты, отметь любимые, и давай создавать воспоминания!',
+      memories: 'Наши воспоминания',
+      wishList: 'Список желаний',
+      addNewWish: 'Добавить новое желание...',
+      newCompliment: 'Новый комплимент',
+      loveNoteText: 'Ты — лучшее, что случилось в моей жизни. Каждый день с тобой — это маленькое чудо.',
+      withLove: 'С любовью навсегда',
+    }
+  };
+
+  const getText = (key) => translations[language][key];
 
   const colorThemes = {
     pink: {
@@ -91,6 +160,10 @@ const Eva = () => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+  };
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'ru' : 'en');
   };
 
   const sendCompliment = () => {
@@ -139,7 +212,7 @@ const Eva = () => {
     if (newWish.trim() !== '') {
       setWishes([
         ...wishes,
-        { id: Date.now(), text: newWish, completed: false }
+        { id: Date.now(), text: newWish, text_en: newWish, completed: false }
       ]);
       setNewWish('');
     }
@@ -170,6 +243,7 @@ const Eva = () => {
         {
           id: Date.now(),
           text: newFeature,
+          text_en: newFeature,
           emoji: selectedEmoji,
           liked: false,
           priority: 'medium'
@@ -196,7 +270,7 @@ const Eva = () => {
   };
 
   const randomCompliment = () => {
-    return compliments[Math.floor(Math.random() * compliments.length)];
+    return compliments[language][Math.floor(Math.random() * compliments[language].length)];
   };
 
   useEffect(() => {
@@ -263,7 +337,7 @@ const Eva = () => {
     if (newWish.trim() === '') return;
 
     const id = wishes.length ? Math.max(...wishes.map((wish) => wish.id)) + 1 : 1;
-    setWishes([...wishes, { id, text: newWish, completed: false }]);
+    setWishes([...wishes, { id, text: newWish, text_en: newWish, completed: false }]);
     setNewWish('');
   };
 
@@ -297,6 +371,11 @@ const Eva = () => {
 
     return confettiElements;
   };
+
+  // Функция для получения текста в зависимости от выбранного языка
+  const getFeatureText = (feature) => language === 'en' ? feature.text_en : feature.text;
+  const getWishText = (wish) => language === 'en' ? wish.text_en : wish.text;
+  const getMemoryTitle = (memory) => language === 'en' ? memory.title : memory.title_ru;
 
   return (
     <div className={`eva-page ${colorTheme}`} ref={containerRef} onClick={handleHeartClick}>
@@ -336,9 +415,9 @@ const Eva = () => {
             <img src="/images/eva white.jpg" alt="Eva" className="profile-pic" />
             <div className="profile-info">
               <h1>Eva <GiButterflyFlower className="name-icon" /></h1>
-              <p className="profile-subtitle">My sweet girl</p>
+              <p className="profile-subtitle">{getText('profileTitle')}</p>
               <div className="mood-meter">
-                <p>Mood today:</p>
+                <p>{getText('moodToday')}</p>
                 <div className="star-rating">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <FaStar
@@ -356,6 +435,20 @@ const Eva = () => {
           </div>
         </div>
       </header>
+
+      <div className="language-switcher">
+        <button
+          className="language-button"
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleLanguage();
+          }}
+          title={language === 'en' ? 'Переключить на русский' : 'Switch to English'}
+        >
+          <FaLanguage />
+          <span>{language === 'en' ? 'RU' : 'EN'}</span>
+        </button>
+      </div>
 
       <div className="theme-switcher">
         <button
@@ -386,32 +479,32 @@ const Eva = () => {
           className={activeTab === 'gallery' ? 'active' : ''}
           onClick={() => handleTabChange('gallery')}
         >
-          <FaCamera /> Gallery
+          <FaCamera /> {getText('gallery')}
         </button>
         <button
           className={activeTab === 'wishes' ? 'active' : ''}
           onClick={() => handleTabChange('wishes')}
         >
-          <FaGift /> Wishes
+          <FaGift /> {getText('wishes')}
         </button>
         <button
           className={activeTab === 'features' ? 'active' : ''}
           onClick={() => handleTabChange('features')}
         >
-          <FaList /> Features
+          <FaList /> {getText('features')}
         </button>
         <button
           className={activeTab === 'compliments' ? 'active' : ''}
           onClick={() => handleTabChange('compliments')}
         >
-          <FaRegSmile /> Compliments
+          <FaRegSmile /> {getText('compliments')}
         </button>
       </div>
 
       <div className="tab-content">
         {activeTab === 'gallery' && (
           <div className="memories-section">
-            <h2>Our Memories <FaCamera /></h2>
+            <h2>{getText('memories')} <FaCamera /></h2>
             <div className="memories-grid">
               {memories.map((memory) => (
                 <motion.div
@@ -424,10 +517,10 @@ const Eva = () => {
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
                   <div className="memory-image">
-                    <img src={memory.image} alt={memory.title} />
+                    <img src={memory.image} alt={getMemoryTitle(memory)} />
                   </div>
                   <div className="memory-info">
-                    <h3>{memory.title}</h3>
+                    <h3>{getMemoryTitle(memory)}</h3>
                     <p>{memory.date}</p>
                   </div>
                 </motion.div>
@@ -438,15 +531,15 @@ const Eva = () => {
 
         {activeTab === 'wishes' && (
           <div className="wishes-section">
-            <h2>Wish List <FaGift /></h2>
+            <h2>{getText('wishList')} <FaGift /></h2>
             <form className="wish-input" onSubmit={handleWishSubmit}>
               <input
                 type="text"
-                placeholder="Add a new wish..."
+                placeholder={getText('addNewWish')}
                 value={newWish}
                 onChange={(e) => setNewWish(e.target.value)}
               />
-              <button type="submit">Add</button>
+              <button type="submit">{getText('add')}</button>
             </form>
             <ul className="wishes-list">
               {wishes.map((wish) => (
@@ -456,7 +549,7 @@ const Eva = () => {
                   whileHover={{ scale: 1.02 }}
                   onClick={() => handleWishToggle(wish.id)}
                 >
-                  <span className="wish-text">{wish.text}</span>
+                  <span className="wish-text">{getWishText(wish)}</span>
                   <span className="wish-check">{wish.completed ? '✓' : '○'}</span>
                 </motion.li>
               ))}
@@ -466,34 +559,34 @@ const Eva = () => {
 
         {activeTab === 'features' && (
           <div className="features-section">
-            <h2>Feature List <GiPalmTree /></h2>
+            <h2>{getText('featureList')} <GiPalmTree /></h2>
 
             <div className="feature-filters">
-              <p>Filter by priority:</p>
+              <p>{getText('filterByPriority')}</p>
               <div className="priority-buttons">
                 <button
                   className={filterPriority === 'all' ? 'active' : ''}
                   onClick={() => setFilterPriority('all')}
                 >
-                  All
+                  {getText('all')}
                 </button>
                 <button
                   className={`${filterPriority === 'high' ? 'active high' : ''}`}
                   onClick={() => setFilterPriority('high')}
                 >
-                  High <FaCrown />
+                  {getText('high')} <FaCrown />
                 </button>
                 <button
                   className={`${filterPriority === 'medium' ? 'active medium' : ''}`}
                   onClick={() => setFilterPriority('medium')}
                 >
-                  Medium <BsStars />
+                  {getText('medium')} <BsStars />
                 </button>
                 <button
                   className={`${filterPriority === 'low' ? 'active low' : ''}`}
                   onClick={() => setFilterPriority('low')}
                 >
-                  Low <GiCupcake />
+                  {getText('low')} <GiCupcake />
                 </button>
               </div>
             </div>
@@ -502,7 +595,7 @@ const Eva = () => {
               <div className="input-group">
                 <input
                   type="text"
-                  placeholder="Add a new fun activity..."
+                  placeholder={getText('addNewActivity')}
                   value={newFeature}
                   onChange={(e) => setNewFeature(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && addFeature()}
@@ -522,7 +615,7 @@ const Eva = () => {
                   </div>
                 </div>
               </div>
-              <button onClick={addFeature}>Add</button>
+              <button onClick={addFeature}>{getText('add')}</button>
             </div>
 
             <motion.ul
@@ -546,7 +639,7 @@ const Eva = () => {
                 >
                   <div className="feature-content">
                     <span className="feature-emoji">{feature.emoji}</span>
-                    <span className="feature-text">{feature.text}</span>
+                    <span className="feature-text">{getFeatureText(feature)}</span>
                   </div>
                   <div className="feature-actions">
                     <button
@@ -579,8 +672,8 @@ const Eva = () => {
               <div className="info-card">
                 <GiShoppingBag className="info-icon" />
                 <div className="info-text">
-                  <h3>Fun Activities Together</h3>
-                  <p>Create a list of fun activities we can do together. Set priorities, mark your favorites, and let's make memories!</p>
+                  <h3>{getText('funActivities')}</h3>
+                  <p>{getText('funActivitiesDesc')}</p>
                 </div>
               </div>
             </div>
@@ -589,7 +682,7 @@ const Eva = () => {
 
         {activeTab === 'compliments' && (
           <div className="compliments-section">
-            <h2>Compliments <FaRegSmile /></h2>
+            <h2>{getText('compliments')} <FaRegSmile /></h2>
             <div className="compliment-card">
               <motion.div
                 className={`compliment-text ${animation ? 'animate' : ''}`}
@@ -606,19 +699,19 @@ const Eva = () => {
                 {randomCompliment()}
               </motion.div>
               <button className="compliment-button" onClick={sendCompliment}>
-                <FaMagic /> New Compliment
+                <FaMagic /> {getText('newCompliment')}
               </button>
             </div>
             <div className="love-note">
               <GiDiamondRing className="love-icon" />
-              <p>You are the best thing that has ever happened to me. Every day with you is a little miracle.</p>
+              <p>{getText('loveNoteText')}</p>
             </div>
           </div>
         )}
       </div>
 
       <div className="eva-footer">
-        <p>With love forever ❤️</p>
+        <p>{getText('withLove')} ❤️</p>
         <GiPartyPopper className="footer-icon" />
       </div>
     </div>

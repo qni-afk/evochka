@@ -25,6 +25,44 @@
   z-index: 100;
 }
 
+/* Переключатель языка */
+.language-switcher {
+  position: fixed;
+  top: 80px;
+  right: 80px;
+  z-index: 100;
+}
+
+.language-button {
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  color: var(--primary-color);
+  font-size: 18px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.language-button span {
+  position: absolute;
+  font-size: 10px;
+  font-weight: bold;
+  bottom: 7px;
+  right: 7px;
+}
+
+.language-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
 .theme-button {
   background: white;
   border: none;
