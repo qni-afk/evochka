@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaHeart, FaStar, FaArrowLeft } from 'react-icons/fa';
+import { FaHeart, FaStar, FaArrowLeft, FaMusic, FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import ThemeLanguageSwitcher from '../components/ThemeLanguageSwitcher';
 import '../styles/SecretLove.css';
@@ -18,6 +18,8 @@ const SecretLove = () => {
   const [hasAccess, setHasAccess] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
   const [hearts, setHearts] = useState([]);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
+  const audioRef = useRef(null);
 
   // Проверяем, есть ли у пользователя доступ к странице
   useEffect(() => {
@@ -33,6 +35,34 @@ const SecretLove = () => {
       navigate('/gallery');
     }
   }, [navigate]);
+
+  // Управление музыкой
+  useEffect(() => {
+    if (hasAccess && audioRef.current) {
+      // Воспроизведение музыки когда страница загружена
+      const playPromise = audioRef.current.play();
+
+      // Предотвращение ошибок, если браузер не готов воспроизводить аудио
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsMusicPlaying(true);
+          })
+          .catch(error => {
+            console.error("Авто-воспроизведение предотвращено:", error);
+            setIsMusicPlaying(false);
+          });
+      }
+    }
+
+    // Очистка при размонтировании
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, [hasAccess]);
 
   // Создаем падающие сердечки
   useEffect(() => {
@@ -65,6 +95,17 @@ const SecretLove = () => {
     navigate('/gallery');
   };
 
+  const toggleMusic = () => {
+    if (audioRef.current) {
+      if (isMusicPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsMusicPlaying(!isMusicPlaying);
+    }
+  };
+
   if (!hasAccess) {
     return null; // Если нет доступа, ничего не отображаем
   }
@@ -73,6 +114,18 @@ const SecretLove = () => {
     <div className="secret-page">
       <Navbar />
       <ThemeLanguageSwitcher />
+
+      {/* Фоновая музыка */}
+      <audio
+        ref={audioRef}
+        src="https://mp3ukr.net/dl/7b5d10ae-a13c-4376-9270-20ab39d6feb0"
+        loop
+      />
+
+      {/* Кнопка управления музыкой */}
+      <button className="music-control-button" onClick={toggleMusic}>
+        {isMusicPlaying ? <FaVolumeUp /> : <FaVolumeMute />}
+      </button>
 
       {/* Падающие сердечки */}
       <div className="falling-hearts">
@@ -83,7 +136,7 @@ const SecretLove = () => {
 
       <div className="back-button-container">
         <button className="back-button" onClick={goBack}>
-          <FaArrowLeft /> Вернуться в галерею
+          <FaArrowLeft /> <span>Вернуться в галерею</span>
         </button>
       </div>
 
