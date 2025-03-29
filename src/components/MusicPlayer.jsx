@@ -2,10 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import '../styles/MusicPlayer.css';
 import { useMediaQuery } from 'react-responsive';
 
-// Пустые заглушки для аудио файлов
-const song1 = '';
-const song2 = '';
-const song3 = '';
+// Реальные ссылки на аудио файлы
+const song1 = 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1b0292fe04.mp3';
+const song2 = 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_942594a645.mp3';
+const song3 = 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0c6ff1efd.mp3';
+// Ссылка на приватную песню (бесплатный трек с pixabay для демонстрации)
+const privateTrack = 'https://cdn.pixabay.com/download/audio/2022/10/25/audio_dc39bafada.mp3?filename=beautiful-piano-115480.mp3';
 
 const MusicPlayer = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -16,6 +18,7 @@ const MusicPlayer = () => {
   const [showControls, setShowControls] = useState(false);
   const [volume, setVolume] = useState(0.5); // Громкость по умолчанию 50%
   const [isMuted, setIsMuted] = useState(false);
+  const [privateTrackEnabled, setPrivateTrackEnabled] = useState(false);
 
   const audioRef = useRef(null);
   const playerRef = useRef(null);
@@ -23,24 +26,87 @@ const MusicPlayer = () => {
   const lastPositionRef = useRef({ x: 0, y: 0 });
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
-  const tracks = [
-    { title: 'Трек 1', artist: 'Артист 1', file: song1 },
-    { title: 'Трек 2', artist: 'Артист 2', file: song2 },
-    { title: 'Трек 3', artist: 'Артист 3', file: song3 }
-  ];
+  // Проверяем наличие активации приватной песни
+  useEffect(() => {
+    const savedPrivateTrack = localStorage.getItem('privateTrackEnabled');
+    console.log("Проверка приватной песни:", savedPrivateTrack);
+    if (savedPrivateTrack === 'true') {
+      setPrivateTrackEnabled(true);
+      console.log("Приватная песня активирована");
+    }
+  }, []);
+
+  // Получаем список треков с учетом приватной песни
+  const getTracks = () => {
+    const regularTracks = [
+      { title: 'Sunny Morning', artist: 'SoulProdMusic', file: song1 },
+      { title: 'Cinematic Dreams', artist: 'SergeQuadrado', file: song2 },
+      { title: 'Deep Relaxation', artist: 'prazkhanal', file: song3 }
+    ];
+
+    // Если приватная песня активирована, добавляем ее в список
+    if (privateTrackEnabled) {
+      console.log("Добавляем приватную песню в список треков");
+      return [
+        ...regularTracks,
+        { title: '💖 Приватная песня', artist: 'Для тебя', file: privateTrack }
+      ];
+    }
+
+    return regularTracks;
+  };
+
+  const tracks = getTracks();
 
   useEffect(() => {
     if (audioRef.current) {
+      // Задаем громкость
+      audioRef.current.volume = volume;
+
+      // Добавляем обработчики ошибок
+      const handleError = (e) => {
+        console.error("Ошибка аудио:", e);
+        alert(`Ошибка воспроизведения: ${e.target.error ? e.target.error.message : 'Неизвестная ошибка'}`);
+        setIsPlaying(false);
+      };
+
+      const handleCanPlay = () => {
+        console.log("Аудио готово к воспроизведению:", tracks[currentTrack].title);
+      };
+
+      audioRef.current.addEventListener('error', handleError);
+      audioRef.current.addEventListener('canplay', handleCanPlay);
+
       if (isPlaying) {
+        console.log("Пытаемся воспроизвести трек:", tracks[currentTrack]);
         audioRef.current.play().catch(error => {
           console.error("Playback failed:", error);
           setIsPlaying(false);
+          // Показываем сообщение об ошибке пользователю
+          if (tracks[currentTrack].title.includes('Приватная песня')) {
+            alert('Не удалось воспроизвести приватную песню. Возможно, проблема с доступом к файлу.');
+          } else {
+            alert(`Не удалось воспроизвести: ${error.message || 'Проверьте подключение к интернету'}`);
+          }
         });
       } else {
         audioRef.current.pause();
       }
+
+      return () => {
+        // Очищаем обработчики при размонтировании
+        audioRef.current.removeEventListener('error', handleError);
+        audioRef.current.removeEventListener('canplay', handleCanPlay);
+      };
     }
-  }, [isPlaying, currentTrack]);
+  }, [isPlaying, currentTrack, tracks, volume]);
+
+  // Если приватная песня активирована и в списке, автоматически её выбираем
+  useEffect(() => {
+    if (privateTrackEnabled && tracks.length > 3) {
+      setCurrentTrack(3); // Индекс приватной песни
+    }
+  }, [privateTrackEnabled, tracks.length]);
 
   useEffect(() => {
     // Reset player to default position on mobile
@@ -223,8 +289,13 @@ const MusicPlayer = () => {
       {isExpanded && (
         <>
           <div className="music-track-info">
-            <div className="track-title">{tracks[currentTrack].title}</div>
+            <div className={`track-title ${tracks[currentTrack].title.includes('Приватная') ? 'private-track-title' : ''}`}>
+              {tracks[currentTrack].title}
+            </div>
             <div className="track-artist">{tracks[currentTrack].artist}</div>
+            {isPlaying && <div className="loading-indicator">
+              <span></span><span></span><span></span><span></span>
+            </div>}
           </div>
           <div className="music-player-controls">
             <div className="music-player-button prev" onClick={handlePrevTrack}>
@@ -234,12 +305,31 @@ const MusicPlayer = () => {
               <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z" /></svg>
             </div>
           </div>
+          <div className="volume-control">
+            <button className="volume-button" onClick={toggleMute}>
+              {isMuted ?
+                <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12,4L9.91,6.09L12,8.18M4.27,3L3,4.27L7.73,9H3V15H7L12,20V13.27L16.25,17.53C15.58,18.04 14.83,18.46 14,18.7V20.77C15.38,20.45 16.63,19.82 17.68,18.96L19.73,21L21,19.73L12,10.73M19,12C19,12.94 18.8,13.82 18.46,14.64L19.97,16.15C20.62,14.91 21,13.5 21,12C21,7.72 18,4.14 14,3.23V5.29C16.89,6.15 19,8.83 19,12M16.5,12C16.5,10.23 15.5,8.71 14,7.97V10.18L16.45,12.63C16.5,12.43 16.5,12.21 16.5,12Z" /></svg> :
+                <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z" /></svg>
+              }
+            </button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={volume}
+              onChange={handleVolumeChange}
+              className="volume-slider"
+            />
+          </div>
         </>
       )}
       <audio
         ref={audioRef}
         src={tracks[currentTrack].file}
         onEnded={handleNextTrack}
+        preload="auto"
+        crossOrigin="anonymous"
       />
     </div>
   );
