@@ -7,6 +7,7 @@ import ContactForm from '../components/gallery/ContactForm';
 import { useLanguage } from '../context/LanguageContext';
 import '../styles/Gallery.css';
 import { IoMdCloudUpload } from 'react-icons/io';
+import { FaKey, FaHeart } from 'react-icons/fa';
 
 function Gallery() {
   const { t, language } = useLanguage();
@@ -16,6 +17,9 @@ function Gallery() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingStage, setLoadingStage] = useState('images');
   const [showContactForm, setShowContactForm] = useState(false);
+  const [secretCode, setSecretCode] = useState('');
+  const [showSecretCodeInput, setShowSecretCodeInput] = useState(false);
+  const [secretMessageVisible, setSecretMessageVisible] = useState(false);
   const preloadedVideos = useRef({});
   const totalAssets = useRef({ images: 0, videos: 0 });
   const loadedAssets = useRef({ images: 0, videos: 0 });
@@ -23,6 +27,28 @@ function Gallery() {
   const galleryRef = useRef(null);
   const itemRefs = useRef([]);
   const observerRef = useRef({});
+
+  // Проверяем секретное сообщение в localStorage при загрузке
+  useEffect(() => {
+    const savedSecretMessage = localStorage.getItem('secretMessageVisible');
+    if (savedSecretMessage === 'true') {
+      setSecretMessageVisible(true);
+    }
+  }, []);
+
+  // Функция для проверки секретного кода
+  const checkSecretCode = (e) => {
+    e.preventDefault();
+    if (secretCode === '1234') {
+      setSecretMessageVisible(true);
+      localStorage.setItem('secretMessageVisible', 'true');
+      alert('Секретное сообщение разблокировано!');
+    } else {
+      alert('Неверный код!');
+    }
+    setSecretCode('');
+    setShowSecretCodeInput(false);
+  };
 
   // Convert original gallery items to new format
   const galleryItems = [
@@ -290,6 +316,43 @@ function Gallery() {
                     { name: 'Cool', label: t('gallery', 'filterCool') }
                   ]}
                 />
+              </div>
+
+              <div className="secret-message-container">
+                {!showSecretCodeInput ? (
+                  <button
+                    className="secret-code-button"
+                    onClick={() => setShowSecretCodeInput(true)}
+                    title="Введите секретный код"
+                  >
+                    <FaKey />
+                  </button>
+                ) : (
+                  <form className="secret-code-form" onSubmit={checkSecretCode}>
+                    <input
+                      type="password"
+                      className="secret-code-input"
+                      placeholder="Введите код"
+                      value={secretCode}
+                      onChange={(e) => setSecretCode(e.target.value)}
+                    />
+                    <button type="submit" className="secret-code-submit">✓</button>
+                    <button
+                      type="button"
+                      className="secret-code-cancel"
+                      onClick={() => setShowSecretCodeInput(false)}
+                    >
+                      ✕
+                    </button>
+                  </form>
+                )}
+
+                {secretMessageVisible && (
+                  <div className="secret-message">
+                    <FaHeart className="heart-icon" />
+                    <span>Я тебя люблю! ❤️</span>
+                  </div>
+                )}
               </div>
             </div>
 

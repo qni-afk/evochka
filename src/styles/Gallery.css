@@ -906,3 +906,140 @@
 }
 
 /* Информация: класс view-mode и связанная с ним функциональность 3D-режима были удалены */
+
+/* Стили для секретного кода и сообщения */
+.secret-message-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-left: auto;
+  position: relative;
+}
+
+.secret-code-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #9c55ff, #c28aff);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 18px;
+  box-shadow: 0 4px 10px rgba(156, 85, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.secret-code-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(156, 85, 255, 0.4);
+}
+
+.secret-code-form {
+  display: flex;
+  background: linear-gradient(135deg, #ffffff, #f5f5f5);
+  border-radius: 20px;
+  padding: 5px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+  border: 2px solid rgba(156, 85, 255, 0.3);
+  animation: fadeIn 0.3s ease;
+}
+
+.secret-code-input {
+  width: 120px;
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  background: #ffffff;
+  font-size: 14px;
+  outline: none;
+}
+
+.secret-code-submit,
+.secret-code-cancel {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+.secret-code-submit {
+  background: #4caf50;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.secret-code-cancel {
+  background: #f44336;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.secret-code-submit:hover,
+.secret-code-cancel:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+.secret-message {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: linear-gradient(135deg, #ff6b9c, #ff9cad);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(255, 107, 156, 0.4);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  animation: fadeInDown 0.5s ease, pulse 2s infinite alternate;
+  z-index: 10;
+  border: 2px solid white;
+}
+
+.heart-icon {
+  margin-right: 8px;
+  font-size: 18px;
+  color: white;
+  animation: heartbeat 1.2s infinite;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1);
+  }
+  40% {
+    transform: scale(1);
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
