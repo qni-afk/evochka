@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import Navbar from '../components/Navbar';
+import ThemeLanguageSwitcher from '../components/ThemeLanguageSwitcher';
 import FilterButtons from '../components/gallery/FilterButtons';
 import GalleryItem from '../components/gallery/GalleryItem';
 import ContactForm from '../components/gallery/ContactForm';
+import { useLanguage } from '../context/LanguageContext';
 import '../styles/Gallery.css';
 import { IoMdCloudUpload } from 'react-icons/io';
 
 function Gallery() {
-  const [is3DMode, setIs3DMode] = useState(false);
+  const { t, language } = useLanguage();
   const [activeFilter, setActiveFilter] = useState('All');
   const [visibleItems, setVisibleItems] = useState({});
   const [assetsLoaded, setAssetsLoaded] = useState(false);
@@ -48,18 +50,6 @@ function Gallery() {
       videos: galleryItems.length
     };
   }, []);
-
-  // Effect for handling 3D mode
-  useEffect(() => {
-    const gallery = galleryRef.current;
-    if (!gallery) return;
-
-    if (is3DMode) {
-      gallery.classList.add('gallery-grid-3d');
-    } else {
-      gallery.classList.remove('gallery-grid-3d');
-    }
-  }, [is3DMode]);
 
   // Setup intersection observer for each gallery item
   useEffect(() => {
@@ -257,47 +247,55 @@ function Gallery() {
     return galleryItems.filter(item => item.category === activeFilter);
   };
 
-  const toggleMode = () => {
-    setIs3DMode(prev => !prev);
-  };
-
   const toggleContactForm = () => {
     setShowContactForm(!showContactForm);
   };
 
+  const toggleLanguage = () => {
+    setLanguage(prevLang => prevLang === 'ru' ? 'en' : 'ru');
+  };
+
   return (
-    <div className="page-container">
+    <div className="gallery-page">
       <Navbar />
+      <ThemeLanguageSwitcher />
+
       <div className="gallery-container">
-        <h1 className="gallery-title">Gallery</h1>
+        <h1 className="gallery-title">{t('gallery', 'galleryTitle')}</h1>
 
         {!assetsLoaded ? (
-          <div className="gallery-loading">
-            <div className="loading-bar-container">
-              <div className="loading-bar" style={{ width: `${loadingProgress}%` }}></div>
+          <div className="loading-container">
+            <div className="loading-progress">
+              <div className="progress-bar" style={{ width: `${loadingProgress}%` }}>
+                <span className="progress-text">{loadingProgress}%</span>
+              </div>
             </div>
+            <p className="loading-text">
+              {loadingStage === 'images'
+                ? t('gallery', 'loadingPhotos')
+                : t('gallery', 'loadingVideos')}
+            </p>
           </div>
         ) : (
           <>
             <div className="gallery-controls">
-              <div className="mode-toggle">
-                <label className="toggle-label">
-                  <input
-                    type="checkbox"
-                    checked={is3DMode}
-                    onChange={toggleMode}
-                    className="toggle-input"
-                  />
-                  <span className="toggle-slider"></span>
-                  <span className="toggle-text">{is3DMode ? '3D' : '2D'}</span>
-                </label>
+              <div className="filters">
+                <FilterButtons
+                  activeFilter={activeFilter}
+                  setActiveFilter={setActiveFilter}
+                  filters={[
+                    { name: 'All', label: t('gallery', 'filterAll') },
+                    { name: 'Funny', label: t('gallery', 'filterFunny') },
+                    { name: 'Cute', label: t('gallery', 'filterCute') },
+                    { name: 'Cool', label: t('gallery', 'filterCool') }
+                  ]}
+                />
               </div>
-              <FilterButtons activeFilter={activeFilter} onFilterChange={handleFilterChange} />
             </div>
 
             <div
               ref={galleryRef}
-              className={`gallery-grid ${is3DMode ? 'gallery-grid-3d' : ''}`}
+              className={`gallery-grid`}
             >
               {getFilteredItems().map((item, index) => (
                 <div
@@ -305,7 +303,7 @@ function Gallery() {
                   ref={el => itemRefs.current[index] = el}
                   className="gallery-item-container"
                 >
-            <GalleryItem
+                  <GalleryItem
                     item={{
                       ...item,
                       thumbnail: item.previewUrl
@@ -314,8 +312,8 @@ function Gallery() {
                     isVisible={visibleItems[item.id] || false}
                   />
                 </div>
-          ))}
-        </div>
+              ))}
+            </div>
 
             <div className="gallery-footer">
               <button className="contact-button" onClick={toggleContactForm}>

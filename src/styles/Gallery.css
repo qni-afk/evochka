@@ -347,22 +347,6 @@
   color: #c16775;
 }
 
-/* 3D режим */
-.gallery-grid-3d {
-  perspective: 1000px;
-}
-
-.gallery-item-3d {
-  transform-style: preserve-3d;
-  transform: rotateX(5deg) rotateY(5deg);
-  box-shadow: 0 15px 25px rgba(255, 156, 173, 0.25);
-}
-
-.gallery-item-3d:hover {
-  transform: rotateX(0deg) rotateY(0deg) translateY(-10px);
-  box-shadow: 0 20px 30px rgba(255, 156, 173, 0.35);
-}
-
 /* Экранная загрузка для галереи */
 .gallery-loading {
   padding: 40px 0;
@@ -678,22 +662,6 @@
   display: none;
 }
 
-/* 3D mode */
-.gallery-grid-3d .gallery-item {
-  transform-style: preserve-3d;
-  transition: transform 0.5s ease, box-shadow 0.5s ease;
-}
-
-.gallery-grid-3d .gallery-item:hover {
-  transform: translateZ(20px) rotateX(5deg) rotateY(5deg);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 /* Стили для формы контакта */
 .contact-form-container {
   max-width: 700px;
@@ -936,3 +904,5 @@
   transform: translateY(1px);
   box-shadow: 0 4px 12px rgba(156, 85, 255, 0.3);
 }
+
+/* Информация: класс view-mode и связанная с ним функциональность 3D-режима были удалены */
