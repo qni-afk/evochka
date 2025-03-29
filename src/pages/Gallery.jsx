@@ -326,7 +326,7 @@ function Gallery() {
                     onClick={() => setShowSecretCodeInput(true)}
                     title="Введите секретный код"
                   >
-                    <FaKey />
+                    <FaHeart />
                   </button>
                 ) : (
                   <form className="secret-code-form" onSubmit={checkSecretCode}>
@@ -346,13 +346,6 @@ function Gallery() {
                       ✕
                     </button>
                   </form>
-                )}
-
-                {secretMessageVisible && (
-                  <div className="secret-message">
-                    <FaHeart className="heart-icon" />
-                    <span>Я тебя люблю! ❤️</span>
-                  </div>
                 )}
               </div>
             </div>
