@@ -42,7 +42,8 @@ function Gallery() {
     if (secretCode === '1234') {
       setSecretMessageVisible(true);
       localStorage.setItem('secretMessageVisible', 'true');
-      alert('Секретное сообщение разблокировано!');
+      // Перенаправляем на секретную страницу
+      window.location.href = '/secret-love';
     } else {
       alert('Неверный код!');
     }
