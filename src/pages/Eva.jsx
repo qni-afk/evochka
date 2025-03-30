@@ -94,6 +94,7 @@ const Eva = () => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+    localStorage.setItem('eva_activeTab', tab);
   };
 
   const sendCompliment = () => {
@@ -134,6 +135,9 @@ const Eva = () => {
 
     setWishes(updatedWishes);
 
+    // Явно сохраняем в localStorage после изменения
+    setTimeout(() => saveToLocalStorage(), 100);
+
     if (!wishes.find(wish => wish.id === id).completed) {
       setConfetti(true);
       setTimeout(() => setConfetti(false), 3000);
@@ -148,6 +152,9 @@ const Eva = () => {
       ];
       setWishes(newWishes);
       setNewWish('');
+
+      // Явно сохраняем в localStorage после изменения
+      setTimeout(() => saveToLocalStorage(), 100);
     }
   };
 
@@ -157,6 +164,9 @@ const Eva = () => {
     );
 
     setFeatures(updatedFeatures);
+
+    // Явно сохраняем в localStorage после изменения
+    setTimeout(() => saveToLocalStorage(), 100);
   };
 
   const changePriority = (id) => {
@@ -171,6 +181,9 @@ const Eva = () => {
     });
 
     setFeatures(updatedFeatures);
+
+    // Явно сохраняем в localStorage после изменения
+    setTimeout(() => saveToLocalStorage(), 100);
   };
 
   const addFeature = () => {
@@ -187,6 +200,9 @@ const Eva = () => {
       ];
       setFeatures(newFeatures);
       setNewFeature('');
+
+      // Явно сохраняем в localStorage после изменения
+      setTimeout(() => saveToLocalStorage(), 100);
     }
   };
 
@@ -268,6 +284,9 @@ const Eva = () => {
 
     setWishes(updatedWishes);
 
+    // Явно сохраняем в localStorage после изменения
+    setTimeout(() => saveToLocalStorage(), 100);
+
     if (!wishes.find((wish) => wish.id === id).completed) {
       generateConfetti();
     }
@@ -316,39 +335,66 @@ const Eva = () => {
 
   // Функция для сохранения данных в localStorage
   const saveToLocalStorage = () => {
-    localStorage.setItem('eva_wishes', JSON.stringify(wishes));
-    localStorage.setItem('eva_features', JSON.stringify(features));
-    localStorage.setItem('eva_mood', JSON.stringify(moodRating));
-    localStorage.setItem('eva_colorTheme', colorTheme);
+    try {
+      console.log("Сохраняю данные:", { wishes, features, moodRating, colorTheme });
+      localStorage.setItem('eva_wishes', JSON.stringify(wishes));
+      localStorage.setItem('eva_features', JSON.stringify(features));
+      localStorage.setItem('eva_mood', JSON.stringify(moodRating));
+      localStorage.setItem('eva_colorTheme', colorTheme);
+      console.log("Данные сохранены успешно");
+    } catch (error) {
+      console.error("Ошибка при сохранении данных:", error);
+    }
   };
 
   // Загрузка данных из localStorage
   useEffect(() => {
-    const savedWishes = localStorage.getItem('eva_wishes');
-    const savedFeatures = localStorage.getItem('eva_features');
-    const savedMood = localStorage.getItem('eva_mood');
-    const savedTheme = localStorage.getItem('eva_colorTheme');
+    try {
+      console.log("Загружаю данные из localStorage");
+      const savedWishes = localStorage.getItem('eva_wishes');
+      const savedFeatures = localStorage.getItem('eva_features');
+      const savedMood = localStorage.getItem('eva_mood');
+      const savedTheme = localStorage.getItem('eva_colorTheme');
+      const savedTab = localStorage.getItem('eva_activeTab');
 
-    if (savedWishes) {
-      setWishes(JSON.parse(savedWishes));
-    }
+      console.log("Загруженные данные:", {
+        savedWishes,
+        savedFeatures,
+        savedMood,
+        savedTheme,
+        savedTab
+      });
 
-    if (savedFeatures) {
-      setFeatures(JSON.parse(savedFeatures));
-    }
+      if (savedWishes) {
+        setWishes(JSON.parse(savedWishes));
+      }
 
-    if (savedMood) {
-      setMoodRating(JSON.parse(savedMood));
-    }
+      if (savedFeatures) {
+        setFeatures(JSON.parse(savedFeatures));
+      }
 
-    if (savedTheme) {
-      setColorTheme(savedTheme);
+      if (savedMood) {
+        setMoodRating(JSON.parse(savedMood));
+      }
+
+      if (savedTheme) {
+        setColorTheme(savedTheme);
+      }
+
+      if (savedTab) {
+        setActiveTab(savedTab);
+      }
+    } catch (error) {
+      console.error("Ошибка при загрузке данных:", error);
     }
   }, []);
 
   // Сохранение данных при изменении
   useEffect(() => {
-    saveToLocalStorage();
+    // Предотвращаем сохранение при первой загрузке
+    if (wishes.length || features.length) {
+      saveToLocalStorage();
+    }
   }, [wishes, features, moodRating, colorTheme]);
 
   return (
@@ -402,6 +448,8 @@ const Eva = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         setMoodRating(star);
+                        // Явно сохраняем после изменения настроения
+                        setTimeout(() => saveToLocalStorage(), 100);
                       }}
                     />
                   ))}
