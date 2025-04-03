@@ -183,8 +183,8 @@ body {
 .section h2 {
   margin-bottom: 15px;
   font-size: 2rem;
-  color: #fff;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  color: #a981e3;
+  text-shadow: 0 2px 10px rgba(170, 129, 229, 0.97);
 }
 
 .section p {

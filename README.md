@@ -1,12 +1,84 @@
-# React + Vite
+# EvochkaWeb
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Персональный веб-сайт, посвященный Еве, с защищенными разделами и интерактивными функциями.
 
-Currently, two official plugins are available:
+## Особенности проекта
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Аутентификация для защиты персональных данных (логин: eva, пароль: love)
+- Интерактивные секции с визуальными эффектами и анимациями
+- Многоязычная поддержка (русский/английский)
+- Темная и светлая темы
+- Секретные коды и пасхалки
+- Синхронизация данных через API
 
-## Expanding the ESLint configuration
+## Структура проекта
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Проект разделен на два основных компонента:
+
+1. **Фронтенд** - React приложение с интерфейсом пользователя
+2. **Бэкенд** - Express API сервер для хранения и синхронизации данных
+
+### Фронтенд
+
+Фронтенд построен с использованием следующих технологий:
+
+- React 18
+- React Router
+- Framer Motion для анимаций
+- Контекстный API для управления состоянием
+- GSAP для продвинутых анимаций
+
+### Бэкенд
+
+Бэкенд предоставляет REST API для работы с данными:
+
+- Express.js
+- Хранение данных в JSON файлах
+- CORS для безопасности
+
+## Установка и запуск
+
+### Frontend
+
+```bash
+# Установка зависимостей
+npm install
+
+# Запуск в режиме разработки
+npm run dev
+
+# Сборка для производства
+npm run build
+```
+
+### Backend
+
+```bash
+# Перейдите в директорию backend
+cd backend
+
+# Установка зависимостей
+npm install
+
+# Запуск сервера в режиме разработки
+npm run dev
+```
+
+## Секретные коды
+
+Проект содержит несколько секретных кодов, которые активируют специальные функции:
+
+- **143**: Перенаправление на секретную страницу
+- **333**: Активация секретной музыки
+- **777**: Переключение на секретную тему
+- **999**: Создание плавающих сердечек
+- **555**: Создание эффекта "Матрицы"
+- **444**: Генерация эффекта снежинок
+- **888**: Отображение звездного неба
+- **222**: Активация "магического курсора"
+- **111**: Создание эффекта дождя
+- **000**: Отключение всех эффектов
+
+## Синхронизация данных
+
+Приложение автоматически синхронизирует данные между локальным хранилищем и API, обеспечивая сохранность при обновлении браузера и возможность доступа с разных устройств. Если API недоступен, данные сохраняются локально.

@@ -4,15 +4,18 @@ import Navbar from '../components/Navbar';
 import ThemeLanguageSwitcher from '../components/ThemeLanguageSwitcher';
 import { useLanguage } from '../context/LanguageContext';
 import '../styles/Eva.css';
-import { FaHeart, FaStar, FaCamera, FaGift, FaMagic, FaRegSmile, FaList, FaCrown, FaCheck, FaPalette } from 'react-icons/fa';
+import { FaHeart, FaStar, FaCamera, FaGift, FaMagic, FaRegSmile, FaList, FaCrown, FaCheck, FaPalette, FaSignOutAlt } from 'react-icons/fa';
 import { GiDiamondRing, GiButterflyFlower, GiPartyPopper, GiPalmTree, GiCupcake, GiShoppingBag } from 'react-icons/gi';
 import { BsEmojiHeartEyes, BsStars } from 'react-icons/bs';
+import { useAuth } from '../contexts/AuthContext';
+import { useApi } from '../contexts/ApiContext';
 
 const Eva = () => {
   const { t, language, setLanguage } = useLanguage();
+  const { logout, isAuthenticated, loading: authLoading } = useAuth();
+  const { loading, error, saveUserData, loadUserData, offlineMode } = useApi();
   const [activeTab, setActiveTab] = useState('features');
   const [animation, setAnimation] = useState(false);
-  const [hearts, setHearts] = useState([]);
   const [moodRating, setMoodRating] = useState(0);
   const [wishes, setWishes] = useState([
     { id: 1, text: 'Провести день на природе', completed: false },
@@ -22,19 +25,22 @@ const Eva = () => {
   const [newWish, setNewWish] = useState('');
   const [confetti, setConfetti] = useState(false);
   const [features, setFeatures] = useState([
-    { id: 1, text: 'Поездка в парк аттракционов', emoji: '🎡', liked: false, priority: 'high' },
-    { id: 2, text: 'Совместная готовка', emoji: '👩‍🍳', liked: true, priority: 'medium' },
-    { id: 3, text: 'Прогулка по набережной', emoji: '🌅', liked: false, priority: 'low' },
-    { id: 4, text: 'Посмотреть новый фильм', emoji: '🎬', liked: true, priority: 'medium' },
+    { id: 1, text: 'Красивая', stars: 5 },
+    { id: 2, text: 'Умная', stars: 5 },
+    { id: 3, text: 'Заботливая', stars: 5 },
   ]);
   const [newFeature, setNewFeature] = useState('');
   const [selectedEmoji, setSelectedEmoji] = useState('❤️');
   const [filterPriority, setFilterPriority] = useState('all');
-  const [colorTheme, setColorTheme] = useState('pink');
+  const [colorTheme, setColorTheme] = useState('purple');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const evaRef = useRef(null);
   const containerRef = useRef(null);
   const emojiOptions = ['❤️', '🎮', '🎬', '🎭', '🎨', '🎸', '🏄‍♀️', '🚴‍♀️', '🧗‍♀️', '🏂', '🏕️', '🌅', '🍿', '🍕', '🍦', '🍹', '👗', '💃', '🎡', '🎯'];
+
+  // Добавляю состояние для API
+  const [apiMessage, setApiMessage] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const memories = [
     { id: 1, title: 'First meeting', date: '09.12.2023', image: '/images/photo_2025-02-28_01-09-21.jpg' },
@@ -104,30 +110,6 @@ const Eva = () => {
     }, 2000);
   };
 
-  const addHearts = (e) => {
-    if (!containerRef.current) return;
-
-    const containerRect = containerRef.current.getBoundingClientRect();
-    const mouseX = e.clientX - containerRect.left;
-    const mouseY = e.clientY - containerRect.top;
-
-    const newHearts = Array(5).fill().map((_, i) => ({
-      id: Date.now() + i,
-      x: mouseX,
-      y: mouseY,
-      size: Math.random() * 20 + 10,
-      color: `hsl(${Math.random() * 60 + 330}, 100%, 70%)`,
-      duration: Math.random() * 2 + 1,
-      direction: Math.random() * 360
-    }));
-
-    setHearts([...hearts, ...newHearts]);
-
-    setTimeout(() => {
-      setHearts(hearts => hearts.filter(heart => !newHearts.includes(heart)));
-    }, 3000);
-  };
-
   const toggleWish = (id) => {
     const updatedWishes = wishes.map(wish =>
       wish.id === id ? { ...wish, completed: !wish.completed } : wish
@@ -186,24 +168,23 @@ const Eva = () => {
     setTimeout(() => saveToLocalStorage(), 100);
   };
 
-  const addFeature = () => {
-    if (newFeature.trim() !== '') {
-      const newFeatures = [
-        ...features,
-        {
+  const addFeature = (text) => {
+    if (!text || !text.trim()) return;
+
+    const newFeatureItem = {
           id: Date.now(),
-          text: newFeature,
-          emoji: selectedEmoji,
-          liked: false,
-          priority: 'medium'
-        }
-      ];
-      setFeatures(newFeatures);
+      text: text.trim(),
+      stars: 5
+    };
+
+    const updatedFeatures = [...features, newFeatureItem];
+    setFeatures(updatedFeatures);
+
+    // Очищаем поле ввода
       setNewFeature('');
 
-      // Явно сохраняем в localStorage после изменения
-      setTimeout(() => saveToLocalStorage(), 100);
-    }
+    // Сохраняем данные локально и, при необходимости, на сервере
+    saveToLocalStorage(updatedFeatures, wishes, moodRating, colorTheme, activeTab);
   };
 
   const getFilteredFeatures = () => {
@@ -259,22 +240,32 @@ const Eva = () => {
     }, 500);
   }, []);
 
-  const handleHeartClick = (e) => {
-    const heartId = Date.now();
-    const x = e.clientX;
-    const y = e.clientY;
-    setHearts((prevHearts) => [...prevHearts, { id: heartId, x, y }]);
-
-    setTimeout(() => {
-      setHearts((prevHearts) => prevHearts.filter((heart) => heart.id !== heartId));
-    }, 1000);
-  };
-
   const generateConfetti = () => {
-    setConfetti(true);
-    setTimeout(() => {
-      setConfetti(false);
-    }, 5000);
+    const confettiCount = 100;
+    const confettiElements = [];
+
+    for (let i = 0; i < confettiCount; i++) {
+      const left = Math.random() * 100;
+      const width = Math.random() * 8 + 2;
+      const height = Math.random() * 3 + 2;
+      const bg = `hsl(${Math.random() * 360}, 100%, 50%)`;
+
+      confettiElements.push(
+        <div
+          key={`confetti-${i}-${Math.random()}`}
+          className="confetti"
+          style={{
+            left: `${left}%`,
+            width: `${width}px`,
+            height: `${height}px`,
+            backgroundColor: bg,
+            animationDelay: `${Math.random() * 5}s`,
+          }}
+        />
+      );
+    }
+
+    return confettiElements;
   };
 
   const handleWishToggle = (id) => {
@@ -317,7 +308,7 @@ const Eva = () => {
 
       confettiElements.push(
         <div
-          key={i}
+          key={`confetti-${i}-${Math.random()}`}
           className="confetti"
           style={{
             left: `${left}%`,
@@ -333,103 +324,405 @@ const Eva = () => {
     return confettiElements;
   };
 
-  // Функция для сохранения данных в localStorage
-  const saveToLocalStorage = () => {
-    try {
-      console.log("Сохраняю данные:", { wishes, features, moodRating, colorTheme });
-      localStorage.setItem('eva_wishes', JSON.stringify(wishes));
-      localStorage.setItem('eva_features', JSON.stringify(features));
-      localStorage.setItem('eva_mood', JSON.stringify(moodRating));
-      localStorage.setItem('eva_colorTheme', colorTheme);
-      console.log("Данные сохранены успешно");
-    } catch (error) {
-      console.error("Ошибка при сохранении данных:", error);
+  // Функция выхода из аккаунта
+  const handleLogout = () => {
+    // Сохраняем данные перед выходом
+    saveToLocalStorage();
+    // Затем выполняем выход
+    logout();
+  };
+
+  // Загрузка данных пользователя из API
+  useEffect(() => {
+    console.log("Eva: начало загрузки данных пользователя");
+
+    // Флаг для предотвращения загрузки данных при размонтировании
+    let isActive = true;
+
+    const fetchUserData = async () => {
+      try {
+        // Если в офлайн режиме, сразу загружаем данные из localStorage
+        if (offlineMode) {
+          console.log("Eva: офлайн режим, загрузка из localStorage");
+          loadFromLocalStorage();
+          return;
+        }
+
+        console.log("Eva: попытка загрузки данных с сервера");
+        const userData = await loadUserData('eva');
+
+        // Проверяем, что компонент все еще смонтирован
+        if (!isActive) {
+          console.log("Eva: компонент размонтирован, прерываем обработку");
+          return;
+        }
+
+        if (userData) {
+          console.log("Eva: данные с сервера получены", userData);
+          // Если данные получены успешно, обновляем состояния компонента
+          if (userData.wishes) setWishes(userData.wishes);
+          if (userData.features) setFeatures(userData.features);
+          if (userData.moodRating) setMoodRating(userData.moodRating);
+          if (userData.colorTheme) setColorTheme(userData.colorTheme);
+          if (userData.activeTab) setActiveTab(userData.activeTab);
+
+          setApiMessage('Данные успешно загружены с сервера');
+          setTimeout(() => {
+            if (isActive) setApiMessage('');
+          }, 3000);
+        } else {
+          // Если с сервера не пришли данные, загружаем из localStorage
+          console.log("Eva: данные с сервера не получены, загрузка из localStorage");
+          loadFromLocalStorage();
+        }
+      } catch (err) {
+        console.error('Error loading data from API:', err);
+        // Если не удалось загрузить данные с сервера, загружаем из localStorage
+        if (isActive) {
+          console.log("Eva: ошибка загрузки с сервера, загрузка из localStorage");
+          loadFromLocalStorage();
+        }
+      }
+    };
+
+    fetchUserData();
+
+    // Очистка при размонтировании
+    return () => {
+      console.log("Eva: размонтирование компонента");
+      isActive = false;
+    };
+  }, [loadUserData, offlineMode]); // Зависимости только loadUserData и offlineMode
+
+  // Изменяем функцию saveToLocalStorage для сохранения как в localStorage, так и на сервере
+  const saveToLocalStorage = (
+    featuresData = features,
+    wishesData = wishes,
+    moodRatingData = moodRating,
+    colorThemeData = colorTheme,
+    activeTabData = activeTab
+  ) => {
+    // Сохраняем данные в localStorage
+    const data = {
+      wishes: wishesData,
+      features: featuresData,
+      moodRating: moodRatingData,
+      colorTheme: colorThemeData,
+      activeTab: activeTabData
+    };
+
+    localStorage.setItem('eva_data', JSON.stringify(data));
+
+    // Сохраняем данные на сервере через API только если не в офлайн режиме
+    if (!offlineMode) {
+      saveToServer(data);
     }
   };
 
-  // Загрузка данных из localStorage
-  useEffect(() => {
+  // Функция для сохранения данных на сервере
+  const saveToServer = async (data) => {
+    if (isSaving) return; // Предотвращаем множественные запросы сохранения
+
+    setIsSaving(true);
+
     try {
-      console.log("Загружаю данные из localStorage");
-      const savedWishes = localStorage.getItem('eva_wishes');
-      const savedFeatures = localStorage.getItem('eva_features');
-      const savedMood = localStorage.getItem('eva_mood');
-      const savedTheme = localStorage.getItem('eva_colorTheme');
-      const savedTab = localStorage.getItem('eva_activeTab');
+      const success = await saveUserData('eva', data);
 
-      console.log("Загруженные данные:", {
-        savedWishes,
-        savedFeatures,
-        savedMood,
-        savedTheme,
-        savedTab
-      });
-
-      if (savedWishes) {
-        setWishes(JSON.parse(savedWishes));
+      if (success) {
+        setApiMessage('Данные успешно сохранены на сервере');
+        setTimeout(() => setApiMessage(''), 3000);
       }
-
-      if (savedFeatures) {
-        setFeatures(JSON.parse(savedFeatures));
-      }
-
-      if (savedMood) {
-        setMoodRating(JSON.parse(savedMood));
-      }
-
-      if (savedTheme) {
-        setColorTheme(savedTheme);
-      }
-
-      if (savedTab) {
-        setActiveTab(savedTab);
-      }
-    } catch (error) {
-      console.error("Ошибка при загрузке данных:", error);
+    } catch (err) {
+      console.error('Error saving data to API:', err);
+      setApiMessage('Ошибка при сохранении данных на сервере');
+      setTimeout(() => setApiMessage(''), 3000);
+    } finally {
+      setIsSaving(false);
     }
-  }, []);
+  };
 
-  // Сохранение данных при изменении
-  useEffect(() => {
-    // Предотвращаем сохранение при первой загрузке
-    if (wishes.length || features.length) {
+  // Функция для загрузки данных из localStorage
+  const loadFromLocalStorage = () => {
+    try {
+      const savedData = localStorage.getItem('eva_data');
+
+      if (savedData) {
+        const data = JSON.parse(savedData);
+
+        if (data.wishes) setWishes(data.wishes);
+        if (data.features) setFeatures(data.features);
+        if (data.moodRating) setMoodRating(data.moodRating);
+        if (data.colorTheme) setColorTheme(data.colorTheme);
+        if (data.activeTab) setActiveTab(data.activeTab);
+
+        setApiMessage('Данные загружены из локального хранилища');
+        setTimeout(() => setApiMessage(''), 3000);
+      }
+    } catch (err) {
+      console.error('Error loading data from localStorage:', err);
+    }
+  };
+
+  // Компонент для одного желания
+  const WishItem = ({ wish }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editText, setEditText] = useState(wish.text);
+
+    const toggleWish = (e) => {
+      e.stopPropagation(); // Предотвращаем срабатывание родительских обработчиков
+      const updatedWishes = wishes.map(w =>
+        w.id === wish.id ? { ...w, completed: !w.completed } : w
+      );
+      setWishes(updatedWishes);
       saveToLocalStorage();
-    }
-  }, [wishes, features, moodRating, colorTheme]);
+    };
+
+    const handleEdit = (e) => {
+      e.stopPropagation(); // Предотвращаем срабатывание родительских обработчиков
+      setIsEditing(true);
+      setEditText(wish.text);
+    };
+
+    const handleSave = (e) => {
+      e.stopPropagation(); // Предотвращаем срабатывание родительских обработчиков
+      if (editText.trim()) {
+        const updatedWishes = wishes.map(w =>
+          w.id === wish.id ? { ...w, text: editText.trim() } : w
+        );
+        setWishes(updatedWishes);
+        saveToLocalStorage();
+      }
+      setIsEditing(false);
+    };
+
+    const handleCancel = (e) => {
+      e.stopPropagation(); // Предотвращаем срабатывание родительских обработчиков
+      setIsEditing(false);
+      setEditText(wish.text);
+    };
+
+    const handleDelete = (e) => {
+      e.stopPropagation(); // Предотвращаем срабатывание родительских обработчиков
+      if (confirm(language === 'ru' ? 'Вы уверены, что хотите удалить это желание?' : 'Are you sure you want to delete this wish?')) {
+        const updatedWishes = wishes.filter(w => w.id !== wish.id);
+        setWishes(updatedWishes);
+        saveToLocalStorage();
+      }
+    };
+
+    return (
+      <div className={`wish-item ${wish.completed ? 'completed' : ''}`} onClick={toggleWish}>
+        {isEditing ? (
+          <div className="wish-edit-form" onClick={(e) => e.stopPropagation()}>
+            <input
+              type="text"
+              value={editText}
+              onChange={(e) => setEditText(e.target.value)}
+              className="wish-edit-input"
+              autoFocus
+            />
+            <div className="wish-edit-buttons">
+              <button onClick={handleSave} className="wish-save-btn">
+                {language === 'ru' ? 'Сохранить' : 'Save'}
+              </button>
+              <button onClick={handleCancel} className="wish-cancel-btn">
+                {language === 'ru' ? 'Отмена' : 'Cancel'}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <span className="checkbox" onClick={toggleWish}>
+              {wish.completed && <span className="checkmark">✓</span>}
+            </span>
+            <span className="wish-text">{wish.text}</span>
+            <div className="wish-actions">
+              <button onClick={handleEdit} className="wish-edit-btn">
+                ✏️
+              </button>
+              <button onClick={handleDelete} className="wish-delete-btn">
+                🗑️
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
+
+  // Компонент для одной характеристики
+  const FeatureItem = ({ feature }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editText, setEditText] = useState(feature.text);
+
+    const renderStars = () => {
+      return Array(5).fill().map((_, index) => (
+        <span
+          key={index}
+          className={`star ${index < feature.stars ? 'filled' : ''}`}
+          onClick={() => updateStars(feature.id, index + 1)}
+        >
+          ★
+        </span>
+      ));
+    };
+
+    const updateStars = (id, stars) => {
+      const updatedFeatures = features.map(f =>
+        f.id === id ? { ...f, stars } : f
+      );
+      setFeatures(updatedFeatures);
+      saveToLocalStorage();
+    };
+
+    const handleEdit = () => {
+      setIsEditing(true);
+      setEditText(feature.text);
+    };
+
+    const handleSave = () => {
+      if (editText.trim()) {
+        const updatedFeatures = features.map(f =>
+          f.id === feature.id ? { ...f, text: editText.trim() } : f
+        );
+        setFeatures(updatedFeatures);
+        saveToLocalStorage();
+      }
+      setIsEditing(false);
+    };
+
+    const handleCancel = () => {
+      setIsEditing(false);
+      setEditText(feature.text);
+    };
+
+    const handleDelete = () => {
+      if (confirm(language === 'ru' ? 'Вы уверены, что хотите удалить это качество?' : 'Are you sure you want to delete this feature?')) {
+        const updatedFeatures = features.filter(f => f.id !== feature.id);
+        setFeatures(updatedFeatures);
+        saveToLocalStorage();
+      }
+    };
+
+    return (
+      <div className="feature-item">
+        {isEditing ? (
+          <div className="feature-edit-form">
+            <input
+              type="text"
+              value={editText}
+              onChange={(e) => setEditText(e.target.value)}
+              className="feature-edit-input"
+              autoFocus
+            />
+            <div className="feature-edit-buttons">
+              <button onClick={handleSave} className="feature-save-btn">
+                {language === 'ru' ? 'Сохранить' : 'Save'}
+              </button>
+              <button onClick={handleCancel} className="feature-cancel-btn">
+                {language === 'ru' ? 'Отмена' : 'Cancel'}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <span className="feature-text">{feature.text}</span>
+            <div className="feature-actions">
+              <div className="star-rating">
+                {renderStars()}
+              </div>
+              <div className="feature-buttons">
+                <button onClick={handleEdit} className="feature-edit-btn">
+                  ✏️
+                </button>
+                <button onClick={handleDelete} className="feature-delete-btn">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
+
+  // Компонент для выбора цветовой схемы
+  const ColorThemeSelector = () => {
+    const themes = ['purple', 'pink', 'blue', 'green', 'orange'];
+
+    const handleThemeChange = (theme) => {
+      setColorTheme(theme);
+      document.documentElement.setAttribute('data-theme', theme);
+      saveToLocalStorage();
+    };
+
+    return (
+      <div className="color-theme-selector">
+        <h3>{language === 'ru' ? 'Цветовая схема' : 'Color Theme'}</h3>
+        <div className="color-options">
+          {themes.map(theme => (
+            <div
+              key={theme}
+              className={`color-option ${theme} ${colorTheme === theme ? 'selected' : ''}`}
+              onClick={() => handleThemeChange(theme)}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // Компонент для отображения оценки настроения
+  const MoodRating = () => {
+    const handleMoodChange = (rating) => {
+      setMoodRating(rating);
+      saveToLocalStorage();
+    };
+
+    return (
+      <div className="mood-rating">
+        <h3>{language === 'ru' ? 'Ваше настроение сегодня' : 'Your mood today'}</h3>
+        <div className="mood-icons">
+          {[1, 2, 3, 4, 5].map(rating => (
+            <span
+              key={rating}
+              className={`mood-icon ${moodRating === rating ? 'selected' : ''}`}
+              onClick={() => handleMoodChange(rating)}
+            >
+              {rating === 1 && '😞'}
+              {rating === 2 && '😐'}
+              {rating === 3 && '🙂'}
+              {rating === 4 && '😊'}
+              {rating === 5 && '😍'}
+            </span>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   return (
-    <div className={`eva-page ${colorTheme}`} ref={containerRef} onClick={handleHeartClick}>
-      <Navbar />
+    <div className="eva-page" ref={containerRef}>
+      {/* Добавляем информационное сообщение для отладки */}
+      <div className="debug-info" style={{ position: 'fixed', top: '5px', left: '5px', zIndex: 9999, background: 'rgba(255,255,255,0.8)', padding: '5px', fontSize: '12px', display: 'none' }}>
+        isAuthenticated: {String(isAuthenticated)}, loading: {String(authLoading)}
+      </div>
 
+      <Navbar />
       <ThemeLanguageSwitcher />
 
-      {hearts.map(heart => (
-        <motion.div
-          key={heart.id}
-          className="floating-heart"
-          initial={{
-            x: heart.x,
-            y: heart.y,
-            opacity: 1,
-            scale: 0
-          }}
-          animate={{
-            x: heart.x + Math.cos(heart.direction) * 100,
-            y: heart.y - 100 - Math.random() * 50,
-            opacity: 0,
-            scale: heart.size / 10
-          }}
-          transition={{
-            duration: heart.duration,
-            ease: "easeOut"
-          }}
-          style={{ color: heart.color }}
-        >
-          <FaHeart />
-        </motion.div>
-      ))}
-
-      <div className="confetti-container">{renderConfetti()}</div>
+      {animation && (
+        <>
+          <div className="confetti-container">
+            {generateConfetti().map((confetti, index) => React.cloneElement(confetti, {
+              key: `confetti-${index}-${Math.random()}`
+            }))}
+          </div>
+          <div className="wish-granted">
+            <h3>{language === 'ru' ? 'Желание исполнено!' : 'Wish granted!'}</h3>
+          </div>
+        </>
+      )}
 
       <header className="eva-header">
         <div className={`profile-container ${animation ? 'loaded' : ''}`} ref={evaRef}>
@@ -544,124 +837,30 @@ const Eva = () => {
         )}
 
         {activeTab === 'features' && (
-          <div className="features-section">
-            <h2>{t('eva', 'featureList')} <GiPalmTree /></h2>
-
-            <div className="feature-filters">
-              <p>{t('eva', 'filterByPriority')}</p>
-              <div className="priority-buttons">
-                <button
-                  className={filterPriority === 'all' ? 'active' : ''}
-                  onClick={() => setFilterPriority('all')}
-                >
-                  {t('eva', 'all')}
-                </button>
-                <button
-                  className={`${filterPriority === 'high' ? 'active high' : ''}`}
-                  onClick={() => setFilterPriority('high')}
-                >
-                  {t('eva', 'high')} <FaCrown />
-                </button>
-                <button
-                  className={`${filterPriority === 'medium' ? 'active medium' : ''}`}
-                  onClick={() => setFilterPriority('medium')}
-                >
-                  {t('eva', 'medium')} <BsStars />
-                </button>
-                <button
-                  className={`${filterPriority === 'low' ? 'active low' : ''}`}
-                  onClick={() => setFilterPriority('low')}
-                >
-                  {t('eva', 'low')} <GiCupcake />
-                </button>
-              </div>
+          <div className="features-container">
+            <h2>{language === 'ru' ? 'Качества Евы' : 'Eva\'s Features'}</h2>
+            <div className="features-list">
+              {features.map(feature => (
+                <FeatureItem key={feature.id} feature={feature} />
+              ))}
             </div>
 
-            <div className="feature-input">
-              <div className="input-group">
+            {/* Форма добавления нового качества */}
+            <div className="add-feature-form">
                 <input
                   type="text"
-                  placeholder={t('eva', 'addNewActivity')}
+                className="feature-input"
+                placeholder={language === 'ru' ? 'Добавить новое качество...' : 'Add new feature...'}
                   value={newFeature}
-                  onChange={(e) => setNewFeature(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && addFeature()}
-                />
-                <div className="emoji-selector">
-                  <span className="selected-emoji">{selectedEmoji}</span>
-                  <div className="emoji-dropdown">
-                    {emojiOptions.map(emoji => (
-                      <span
-                        key={emoji}
-                        className="emoji-option"
-                        onClick={() => setSelectedEmoji(emoji)}
-                      >
-                        {emoji}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <button onClick={addFeature}>{t('common', 'add')}</button>
-            </div>
-
-            <motion.ul
-              className="features-list"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              {getFilteredFeatures().map((feature) => (
-                <motion.li
-                  key={feature.id}
-                  className={`feature-item priority-${feature.priority}`}
-                  whileHover={{
-                    scale: 1.02,
-                    backgroundColor: feature.liked ? 'rgba(255, 182, 193, 0.3)' : 'rgba(255, 245, 247, 0.5)'
-                  }}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                >
-                  <div className="feature-content">
-                    <span className="feature-emoji">{feature.emoji}</span>
-                    <span className="feature-text">{feature.text}</span>
-                  </div>
-                  <div className="feature-actions">
+                onChange={e => setNewFeature(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && newFeature?.trim() && addFeature(newFeature)}
+              />
                     <button
-                      className={`priority-indicator ${feature.priority}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        changePriority(feature.id);
-                      }}
-                      title={`${t('eva', 'filterByPriority')} ${t('eva', feature.priority)} (${t('common', 'changeTheme')})`}
-                    >
-                      {feature.priority === 'high' && <FaCrown />}
-                      {feature.priority === 'medium' && <BsStars />}
-                      {feature.priority === 'low' && <GiCupcake />}
+                className="add-feature-button"
+                onClick={() => newFeature?.trim() && addFeature(newFeature)}
+              >
+                {language === 'ru' ? 'Добавить' : 'Add'}
                     </button>
-                    <button
-                      className={`like-button ${feature.liked ? 'liked' : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFeatureLike(feature.id);
-                      }}
-                    >
-                      {feature.liked ? <BsEmojiHeartEyes /> : <FaHeart />}
-                    </button>
-                  </div>
-                </motion.li>
-              ))}
-            </motion.ul>
-
-            <div className="feature-info">
-              <div className="info-card">
-                <GiShoppingBag className="info-icon" />
-                <div className="info-text">
-                  <h3>{t('eva', 'funActivitiesTogether')}</h3>
-                  <p>{t('eva', 'funActivitiesDescription')}</p>
-                </div>
-              </div>
             </div>
           </div>
         )}
@@ -700,6 +899,17 @@ const Eva = () => {
         <p>{t('common', 'withLove')} ❤️</p>
         <GiPartyPopper className="footer-icon" />
       </div>
+
+      {/* Кнопка выхода */}
+      <button className="logout-button" onClick={handleLogout}>
+        <FaSignOutAlt /> {language === 'ru' ? 'Выйти' : 'Logout'}
+      </button>
+
+      {/* Добавляем индикатор загрузки и сообщение API */}
+      {loading && <div className="api-loading">Загрузка данных...</div>}
+      {apiMessage && <div className="api-message">{apiMessage}</div>}
+      {error && <div className="api-error">{error}</div>}
+      {offlineMode && <div className="api-warning">Работа в автономном режиме. Данные сохраняются только локально.</div>}
     </div>
   );
 };

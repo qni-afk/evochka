@@ -3,7 +3,9 @@ import { useEffect, useState, useRef } from 'react'
 import { gsap } from 'gsap'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar';
+import ThemeLanguageSwitcher from '../components/ThemeLanguageSwitcher';
 import GalleryImage from '../components/gallery/GalleryImage';
+import { useLanguage } from '../context/LanguageContext';
 
 // Использовать относительные URL для изображений с помощью new URL() в Vite
 const image1 = new URL('/images/image_2025-02-28_01-11-28.png', import.meta.url).href;
@@ -14,6 +16,7 @@ const image5 = new URL('/images/eva%20blue.jpg', import.meta.url).href;
 const image6 = new URL('/images/eva%20sex.jpg', import.meta.url).href;
 
 function Home() {
+  const { t, language } = useLanguage();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentVideo, setCurrentVideo] = useState(0);
   const [videoLoaded, setVideoLoaded] = useState([false, false, false, false]);
@@ -28,6 +31,10 @@ function Home() {
     '/video/IMG_6404.MOV',
     '/video/IMG_6710.MP4'
   ];
+
+  const toggleLanguage = () => {
+    setLanguage(prevLang => prevLang === 'ru' ? 'en' : 'ru');
+  };
 
   // Инициализация компонента
   useEffect(() => {
@@ -201,14 +208,16 @@ function Home() {
       });
     }, { threshold: 0.1 });
 
-    // Наблюдаем за секциями
     sectionsRef.current.forEach(section => {
-      if (section) observer.observe(section);
+      if (section) {
+        observer.observe(section);
+        gsap.set(section, { opacity: 0, y: 50 });
+      }
     });
 
     // Таймер отношений
-    const startDate = new Date('12.09.2023');
     function updateTimer() {
+      const startDate = new Date("2023-12-09T00:00:00Z");
       const now = new Date();
       const diff = now - startDate;
 
@@ -221,9 +230,9 @@ function Home() {
       const timerElement = document.getElementById('love-timer');
       if (timerElement) {
         timerElement.innerHTML = `
-          Мы вместе уже:<br>
-          ${years} год ${days} дней<br>
-          ${hours} часов ${minutes} минут ${seconds} секунд
+          ${t('home', 'togetherFor')}<br>
+          ${years} ${t('home', 'years')} ${days} ${t('home', 'days')}<br>
+          ${hours} ${t('home', 'hours')} ${minutes} ${t('home', 'minutes')} ${seconds} ${t('home', 'seconds')}
         `;
       }
     }
@@ -275,104 +284,108 @@ function Home() {
   };
 
   return (
-    <div className="wrapper">
-      {/* Темный оверлей */}
-      <div className="dark-overlay"></div>
+    <div className="home-container">
+      <Navbar />
+      <ThemeLanguageSwitcher />
 
-      {/* Фиксированные элементы */}
-      <div className="fixed-elements">
-        {/* Навигация */}
-        <Navbar />
+      <div className="hero-section">
+        <div className="hero-content">
+          {/* Темный оверлей */}
+          <div className="dark-overlay"></div>
 
-        {/* Таймер отношений */}
-        <div id="love-timer"></div>
-      </div>
-
-      {/* Основной контент */}
-      <div className="content" ref={contentRef}>
-        {/* Аудио */}
-        <audio id="background-music" loop preload="auto">
-          <source src="/music/i love you so by the walters.mp3" type="audio/mpeg" />
-        </audio>
-
-        {/* Фоновое видео */}
-        <div className="video-background">
-          {videos.map((src, index) => (
-            <video
-              key={index}
-              ref={el => videoRefs.current[index] = el}
-              autoPlay
-              muted
-              loop
-              playsInline
-              webkit-playsinline="true"
-              className={index === currentVideo ? 'active' : ''}
-              preload="auto"
-              style={{opacity: index === currentVideo ? 1 : 0}}
-              onLoadedData={(e) => {
-                if (index === currentVideo) {
-                  e.target.play().catch(err => console.error('Video play error:', err));
-                }
-                const newLoaded = [...videoLoaded];
-                newLoaded[index] = true;
-                setVideoLoaded(newLoaded);
-              }}
-            >
-              <source src={src} type={getVideoType(src)} />
-              {isMOVFile(src) && (
-                <source src={src.replace(/\.mov$/i, '.mp4')} type="video/mp4" />
-              )}
-              Ваш браузер не поддерживает видео.
-            </video>
-          ))}
-        </div>
-
-        {/* Основной контент */}
-        <div className="container">
-          <h1 className="title animate__title">about you</h1>
-          <div className="content-text animate__text">
-            <p></p>
+          {/* Фиксированные элементы */}
+          <div className="fixed-elements">
+            {/* Таймер отношений */}
+            <div id="love-timer"></div>
           </div>
 
-          <div className="love-message" style={{ display: 'none' }}>
-            <p className="love-text">Я тебя люблю ❤️</p>
-            <div className="response-buttons">
-              <button className="yes-btn">я тебя тоже люблю!</button>
-              <button className="no-btn">нет...</button>
+          {/* Основной контент */}
+          <div className="content" ref={contentRef}>
+            {/* Аудио */}
+            <audio id="background-music" loop preload="auto">
+              <source src="/music/i love you so by the walters.mp3" type="audio/mpeg" />
+            </audio>
+
+            {/* Фоновое видео */}
+            <div className="video-background">
+              {videos.map((src, index) => (
+                <video
+                  key={index}
+                  ref={el => videoRefs.current[index] = el}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  webkit-playsinline="true"
+                  className={index === currentVideo ? 'active' : ''}
+                  preload="auto"
+                  style={{opacity: index === currentVideo ? 1 : 0}}
+                  onLoadedData={(e) => {
+                    if (index === currentVideo) {
+                      e.target.play().catch(err => console.error('Video play error:', err));
+                    }
+                    const newLoaded = [...videoLoaded];
+                    newLoaded[index] = true;
+                    setVideoLoaded(newLoaded);
+                  }}
+                >
+                  <source src={src} type={getVideoType(src)} />
+                  {isMOVFile(src) && (
+                    <source src={src.replace(/\.mov$/i, '.mp4')} type="video/mp4" />
+                  )}
+                  Ваш браузер не поддерживает видео.
+                </video>
+              ))}
+            </div>
+
+            {/* Основной контент */}
+            <div className="container">
+              <h1 className="title animate__title">{t('home', 'aboutYou')}</h1>
+              <div className="content-text animate__text">
+                <p></p>
+              </div>
+
+              <div className="love-message" style={{ display: 'none' }}>
+                <p className="love-text">Я тебя люблю ❤️</p>
+                <div className="response-buttons">
+                  <button className="yes-btn">я тебя тоже люблю!</button>
+                  <button className="no-btn">нет...</button>
+                </div>
+              </div>
+            </div>
+
+            {/* Секции с текстом */}
+            <div className="sections">
+              {[
+                { title: t('home', 'happiness'), text: t('home', 'happinessText') },
+                { title: t('home', 'dream'), text: t('home', 'dreamText') },
+                { title: t('home', 'comfort'), text: t('home', 'comfortText') },
+                { title: t('home', 'meaning'), text: t('home', 'meaningText') },
+                { title: t('home', 'sweet'), text: t('home', 'sweetText') }
+              ].map((section, index) => (
+              <section
+                key={index}
+                className="section"
+                ref={el => sectionsRef.current[index] = el}
+              >
+                <h2>{section.title}</h2>
+                <p>{section.text}</p>
+              </section>
+            ))}
+            </div>
+
+            {/* Галерея */}
+            <div className="gallery">
+              <GalleryImage src="/images/image_2025-02-28_01-11-28.png" alt="Gallery Image 1" />
+              <GalleryImage src="/images/photo_2025-02-28_01-09-21.jpg" alt="Gallery Image 2" />
+              <GalleryImage src="/images/photo_2024-06-17_22-32-56.jpg" alt="Gallery Image 3" />
+            </div>
+
+            {/* Кнопка навигации */}
+            <div className="button-container">
+              <Link to="/gallery" className="navigate-btn">{t('common', 'viewMore')}</Link>
             </div>
           </div>
-        </div>
-
-        {/* Секции с текстом */}
-        <div className="sections">
-          {[
-            { title: 'My happiness', text: "I'm very lucky that you chose me." },
-            { title: 'My dream', text: 'with you at ease.' },
-            { title: 'My comfort', text: 'i forget all my problems with you.' },
-            { title: 'You mean so much to me', text: "when I'm with you, i feel good." },
-            { title: "You're sweet", text: "you're very sexy." }
-          ].map((section, index) => (
-          <section
-            key={index}
-            className="section"
-            ref={el => sectionsRef.current[index] = el}
-          >
-            <h2>{section.title}</h2>
-            <p>{section.text}</p>
-          </section>
-        ))}
-        </div>
-
-        {/* Галерея */}
-        <div className="gallery">
-          <GalleryImage src="/images/image_2025-02-28_01-11-28.png" alt="Gallery Image 1" />
-          <GalleryImage src="/images/photo_2025-02-28_01-09-21.jpg" alt="Gallery Image 2" />
-          <GalleryImage src="/images/photo_2024-06-17_22-32-56.jpg" alt="Gallery Image 3" />
-        </div>
-
-        {/* Кнопка навигации */}
-        <div className="button-container">
-          <Link to="/gallery" className="navigate-btn">Посмотреть больше фотографий</Link>
         </div>
       </div>
     </div>

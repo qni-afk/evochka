@@ -1,25 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
 import Navbar from '../components/Navbar';
 import ThemeLanguageSwitcher from '../components/ThemeLanguageSwitcher';
-import FilterButtons from '../components/gallery/FilterButtons';
 import GalleryItem from '../components/gallery/GalleryItem';
 import ContactForm from '../components/gallery/ContactForm';
 import { useLanguage } from '../context/LanguageContext';
 import '../styles/Gallery.css';
 import { IoMdCloudUpload } from 'react-icons/io';
-import { FaKey, FaHeart } from 'react-icons/fa';
+import { gsap } from 'gsap';
+import FallingHearts from '../components/FallingHearts';
 
 function Gallery() {
   const { t, language } = useLanguage();
-  const [activeFilter, setActiveFilter] = useState('All');
   const [visibleItems, setVisibleItems] = useState({});
   const [assetsLoaded, setAssetsLoaded] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingStage, setLoadingStage] = useState('images');
   const [showContactForm, setShowContactForm] = useState(false);
-  const [secretCode, setSecretCode] = useState('');
-  const [showSecretCodeInput, setShowSecretCodeInput] = useState(false);
-  const [secretMessageVisible, setSecretMessageVisible] = useState(false);
   const preloadedVideos = useRef({});
   const totalAssets = useRef({ images: 0, videos: 0 });
   const loadedAssets = useRef({ images: 0, videos: 0 });
@@ -27,29 +23,7 @@ function Gallery() {
   const galleryRef = useRef(null);
   const itemRefs = useRef([]);
   const observerRef = useRef({});
-
-  // Проверяем секретное сообщение в localStorage при загрузке
-  useEffect(() => {
-    const savedSecretMessage = localStorage.getItem('secretMessageVisible');
-    if (savedSecretMessage === 'true') {
-      setSecretMessageVisible(true);
-    }
-  }, []);
-
-  // Функция для проверки секретного кода
-  const checkSecretCode = (e) => {
-    e.preventDefault();
-    if (secretCode === '1234') {
-      setSecretMessageVisible(true);
-      localStorage.setItem('secretMessageVisible', 'true');
-      // Перенаправляем на секретную страницу
-      window.location.href = '/secret-love';
-    } else {
-      alert('Неверный код!');
-    }
-    setSecretCode('');
-    setShowSecretCodeInput(false);
-  };
+  const cursorDotRef = useRef(null);
 
   // Convert original gallery items to new format
   const galleryItems = [
@@ -65,10 +39,24 @@ function Gallery() {
     { id: 10, title: 'Cute Moment 5', url: '/video/gif/10.MOV', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/10.jpg' },
     { id: 11, title: 'Cute Moment 6', url: '/video/gif/11.MOV', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/11.jpg' },
     { id: 12, title: 'Cute Moment 7', url: '/video/gif/12.MP4', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/12.jpg' },
-    { id: 13, title: 'Cute Moment 8', url: '/video/gif/13.MOV', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/13.jpg' },
-    { id: 14, title: 'Cute Moment 9', url: '/video/gif/14.mp4', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/14.png' },
-    { id: 15, title: 'Cute Moment 10', url: '/video/gif/15.mp4', type: 'video', category: 'Cute', previewUrl: '/video/preview gif/15.png' },
+    // Удаляю отсутствующие файлы (13-15), которых нет на сервере
   ];
+
+  // Custom cursor movement effect
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (cursorDotRef.current) {
+        cursorDotRef.current.style.left = `${e.clientX}px`;
+        cursorDotRef.current.style.top = `${e.clientY}px`;
+      }
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
   // Determine total asset count
   useEffect(() => {
@@ -81,7 +69,7 @@ function Gallery() {
   // Setup intersection observer for each gallery item
   useEffect(() => {
     // Setup intersection observer for each gallery item
-    itemRefs.current = itemRefs.current.slice(0, getFilteredItems().length);
+    itemRefs.current = itemRefs.current.slice(0, galleryItems.length);
 
     const observerOptions = {
       root: null,
@@ -102,7 +90,7 @@ function Gallery() {
     // Observe all gallery items
     itemRefs.current.forEach((ref, index) => {
       if (ref) {
-        ref.setAttribute('data-id', getFilteredItems()[index].id);
+        ref.setAttribute('data-id', galleryItems[index].id);
         observer.observe(ref);
       }
     });
@@ -114,7 +102,7 @@ function Gallery() {
         observerRef.current.disconnect();
       }
     };
-  }, [activeFilter]);
+  }, []);
 
   // Function to update loading progress
   const updateLoadingProgress = () => {
@@ -263,32 +251,34 @@ function Gallery() {
     });
   };
 
-  const handleFilterChange = (newFilter) => {
-    setActiveFilter(newFilter);
-  };
-
-  const getFilteredItems = () => {
-    if (activeFilter === 'All') {
-      return galleryItems;
+  // Animate title when component loads and gallery is displayed
+  useEffect(() => {
+    if (assetsLoaded) {
+      gsap.to(".animate__title", {
+        opacity: 1,
+        y: 0,
+        duration: 1.5,
+        ease: "power4.out",
+        delay: 0.5
+      });
     }
-    return galleryItems.filter(item => item.category === activeFilter);
-  };
+  }, [assetsLoaded]);
 
   const toggleContactForm = () => {
     setShowContactForm(!showContactForm);
-  };
-
-  const toggleLanguage = () => {
-    setLanguage(prevLang => prevLang === 'ru' ? 'en' : 'ru');
   };
 
   return (
     <div className="gallery-page">
       <Navbar />
       <ThemeLanguageSwitcher />
+      <div className="cursor-dot" ref={cursorDotRef}></div>
+
+      {/* Падающие сердечки */}
+      <FallingHearts count={20} />
 
       <div className="gallery-container">
-        <h1 className="gallery-title">{t('gallery', 'galleryTitle')}</h1>
+        <h1 className="gallery-title animate__title">{t('gallery', 'galleryTitle')}</h1>
 
         {!assetsLoaded ? (
           <div className="loading-container">
@@ -305,56 +295,11 @@ function Gallery() {
           </div>
         ) : (
           <>
-            <div className="gallery-controls">
-              <div className="filters">
-                <FilterButtons
-                  activeFilter={activeFilter}
-                  setActiveFilter={setActiveFilter}
-                  filters={[
-                    { name: 'All', label: t('gallery', 'filterAll') },
-                    { name: 'Funny', label: t('gallery', 'filterFunny') },
-                    { name: 'Cute', label: t('gallery', 'filterCute') },
-                    { name: 'Cool', label: t('gallery', 'filterCool') }
-                  ]}
-                />
-              </div>
-
-              <div className="secret-message-container">
-                {!showSecretCodeInput ? (
-                  <button
-                    className="secret-code-button"
-                    onClick={() => setShowSecretCodeInput(true)}
-                    title="Введите секретный код"
-                  >
-                    <FaHeart />
-                  </button>
-                ) : (
-                  <form className="secret-code-form" onSubmit={checkSecretCode}>
-                    <input
-                      type="password"
-                      className="secret-code-input"
-                      placeholder="Введите код"
-                      value={secretCode}
-                      onChange={(e) => setSecretCode(e.target.value)}
-                    />
-                    <button type="submit" className="secret-code-submit">✓</button>
-                    <button
-                      type="button"
-                      className="secret-code-cancel"
-                      onClick={() => setShowSecretCodeInput(false)}
-                    >
-                      ✕
-                    </button>
-                  </form>
-                )}
-              </div>
-            </div>
-
             <div
               ref={galleryRef}
               className={`gallery-grid`}
             >
-              {getFilteredItems().map((item, index) => (
+              {galleryItems.map((item, index) => (
                 <div
                   key={item.id}
                   ref={el => itemRefs.current[index] = el}

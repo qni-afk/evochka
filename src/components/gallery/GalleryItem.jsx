@@ -11,7 +11,8 @@ const GalleryItem = ({ item, onClick, index, isVisible }) => {
   // Предварительно загружаем видео, когда элемент становится видимым
   useEffect(() => {
     if (isVisible && item.type === 'video' && videoRef.current) {
-      videoRef.current.preload = 'auto'; // Полностью загружаем видео
+      videoRef.current.preload = 'metadata'; // Загружаем только метаданные для ускорения
+      videoRef.current.muted = true; // Всегда без звука
       videoRef.current.load();
     }
   }, [isVisible, item.type]);
@@ -20,7 +21,9 @@ const GalleryItem = ({ item, onClick, index, isVisible }) => {
   useEffect(() => {
     if (isHovered && item.type === 'video' && videoRef.current) {
       const playVideo = () => {
+        videoRef.current.muted = true; // Always mute video before playing to avoid autoplay restrictions
         videoRef.current.play().catch(err => {
+          // Подавляем ошибку, чтобы не блокировать интерфейс
           console.error('Error playing video on hover:', err);
         });
       };
@@ -41,17 +44,20 @@ const GalleryItem = ({ item, onClick, index, isVisible }) => {
     setIsLoaded(true);
   };
 
-  const handleError = () => {
+  const handleError = (e) => {
     console.error(`Failed to load ${item.type}: ${item.url}`);
     setIsError(true);
+    // Не показываем предупреждение пользователю, просто регистрируем ошибку
   };
 
   const handleMouseEnter = () => {
     setIsHovered(true);
     if (item.type === 'video' && videoRef.current) {
-      // Установить звук на минимум, но не полностью выключать
-      videoRef.current.volume = 0.1;
+      // Always mute video to enable autoplay
+      videoRef.current.muted = true;
+      videoRef.current.volume = 0;
       videoRef.current.play().catch(err => {
+        // Игнорируем ошибку воспроизведения
         console.error('Error playing video on hover:', err);
       });
     }
@@ -70,7 +76,9 @@ const GalleryItem = ({ item, onClick, index, isVisible }) => {
     setIsLoaded(true);
     // Если уже наведен, начинаем воспроизведение
     if (isHovered && videoRef.current) {
+      videoRef.current.muted = true; // Ensure video is muted
       videoRef.current.play().catch(err => {
+        // Игнорируем ошибку
         console.error('Error playing loaded video:', err);
       });
     }
@@ -95,7 +103,7 @@ const GalleryItem = ({ item, onClick, index, isVisible }) => {
 
       {isError && (
         <div className="error-overlay">
-          <div className="error-message">Failed to load</div>
+          <div className="error-message">Ошибка загрузки</div>
         </div>
       )}
 
@@ -123,12 +131,11 @@ const GalleryItem = ({ item, onClick, index, isVisible }) => {
             ref={videoRef}
             src={item.url}
             className="gallery-video"
-            muted={false}
-            volume={0.1}
+            muted={true}
             playsInline
             loop
-            autoPlay={isHovered}
-            preload="auto"
+            autoPlay={false}
+            preload="metadata"
             style={{ display: isHovered ? 'block' : 'none' }}
             onCanPlay={handleVideoLoaded}
             onLoadedData={handleVideoLoaded}

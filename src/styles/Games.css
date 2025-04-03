@@ -1,5 +1,5 @@
 /* Стили для контейнера страницы игры */
-.page-container {
+.games-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #f4a0a9 0%, #ffc3cd 100%);
   padding-top: 80px; /* Отступ верхний под навигацию */
@@ -11,7 +11,7 @@
 }
 
 /* Стили для игры "Сад мечты" */
-.dream-garden-container {
+.game-container {
   width: 100%;
   max-width: 1200px;
   margin: 20px auto;
@@ -25,7 +25,7 @@
   backdrop-filter: blur(10px);
 }
 
-.dream-garden-container h2 {
+.game-container h2 {
   color: #fff;
   margin-bottom: 20px;
   font-size: 2rem;
@@ -33,7 +33,7 @@
   font-weight: bold;
 }
 
-.dream-garden-container p {
+.game-container p {
   color: #fff;
   font-size: 1.2rem;
   margin-bottom: 15px;
@@ -220,7 +220,7 @@
 }
 
 /* Стили для стартовой панели */
-.start-game-panel {
+.game-start-screen {
   background: rgba(255, 255, 255, 0.95);
   padding: 40px;
   border-radius: 15px;
@@ -228,20 +228,20 @@
   backdrop-filter: blur(10px);
 }
 
-.start-game-panel h2 {
+.game-start-screen h1 {
   color: #4a305e;
   font-size: 2.5em;
   margin-bottom: 20px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.start-game-panel p {
+.game-start-screen p {
   color: #4a6670;
   font-size: 1.2em;
   margin-bottom: 30px;
 }
 
-.start-button {
+.start-game-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,22 +249,18 @@
   font-size: 1.3em;
   padding: 15px 40px;
   background: linear-gradient(135deg, #8e54e9 0%, #4776e6 100%);
-  color: white;
   border: none;
+  color: white;
   border-radius: 30px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 8px 20px rgba(142, 84, 233, 0.3);
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
 }
 
-.start-button:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(142, 84, 233, 0.5);
-}
-
-.start-button:active {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(142, 84, 233, 0.4);
+.start-game-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .button-icon {
@@ -352,20 +348,20 @@
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .page-container {
+  .games-page {
     padding: 60px 10px 20px 10px; /* Уменьшаем отступы на мобильных устройствах */
   }
 
-  .dream-garden-container {
+  .game-container {
     padding: 15px;
     border-radius: 15px;
   }
 
-  .start-game-panel {
+  .game-start-screen {
     padding: 20px;
   }
 
-  .start-game-panel h2 {
+  .game-start-screen h1 {
     font-size: 2em;
   }
 
@@ -1303,5 +1299,172 @@ button:active {
   .buy-button.photo-upload {
     width: 100%;
     margin-top: 10px;
+  }
+}
+
+/* Стили для интерфейса упрощенной игры */
+.game-interface {
+  text-align: center;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  margin: 20px 0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.game-interface h2 {
+  color: #ff6b9c;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.game-interface p {
+  color: #555;
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.return-button {
+  background: linear-gradient(135deg, #ff6b9c 0%, #ff9cad 100%);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(255, 107, 156, 0.3);
+  transition: all 0.3s ease;
+}
+
+.return-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 15px rgba(255, 107, 156, 0.4);
+}
+
+.return-button:active {
+  transform: translateY(1px);
+}
+
+.error-message {
+  background-color: #fff0f0;
+  border-left: 5px solid #ff6b6b;
+  border-radius: 8px;
+}
+
+/* Стили для встроенного навбара */
+.navbar {
+  position: fixed;
+  top: 20px;
+  left: 0;
+  right: 0;
+  width: max-content;
+  margin: 0 auto;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 30px;
+  padding: 12px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.navbar:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-list {
+  display: flex;
+  gap: 15px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-list li {
+  position: relative;
+}
+
+.nav-list li a {
+  color: white;
+  text-decoration: none;
+  padding: 8px 15px;
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-radius: 20px;
+}
+
+.nav-list li.active a {
+  background: rgba(255, 255, 255, 0.15);
+  font-weight: 700;
+}
+
+.nav-list li a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Адаптивность для навбара */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px 20px;
+    width: 90%;
+  }
+
+  .nav-list {
+    gap: 5px;
+  }
+
+  .nav-list li a {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
+
+/* Стили для пользовательских кнопок (div вместо button) */
+.custom-button {
+  padding: 15px 30px;
+  background: linear-gradient(to right, #ff6b9c, #ff9cad);
+  border: none;
+  border-radius: 50px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 107, 156, 0.3);
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-align: center;
+  user-select: none;
+  margin: 20px auto;
+  position: relative;
+  z-index: 10;
+}
+
+.custom-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 20px rgba(255, 107, 156, 0.4);
+}
+
+.custom-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 10px rgba(255, 107, 156, 0.3);
+}
+
+/* Делаем кнопку более доступной для клика на мобильных устройствах */
+@media (max-width: 768px) {
+  .custom-button {
+    padding: 18px 40px;
+    font-size: 20px;
+    margin: 30px auto;
   }
 }
