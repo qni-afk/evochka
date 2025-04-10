@@ -1,0 +1,130 @@
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding-top: 80px;
+  background: linear-gradient(45deg, #fff5f5, #ffe6e6);
+  color: #333;
+}
+
+.page-container h1 {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 2.5rem;
+  text-align: center;
+  background: linear-gradient(45deg, rgba(255, 170, 255, 0.977), Tomato, Violet);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 50px red;
+}
+
+.button-container {
+  text-align: center;
+  margin: 50px 0;
+}
+
+.navigate-btn {
+  display: inline-block;
+  padding: 12px 25px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.navigate-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 10px 20px;
+  }
+
+  .nav-list {
+    gap: 5px;
+  }
+
+  .nav-list button {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .section {
+    padding: 20px;
+  }
+
+  .section h2 {
+    font-size: 1.5rem;
+  }
+
+  .section p {
+    font-size: 1rem;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+
+/* Стили для индикатора загрузки */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(147, 112, 219, 0.2);
+  border-top: 5px solid var(--primary-color, #9370DB);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-container p {
+  font-size: 18px;
+  color: var(--primary-color, #9370DB);
+  font-weight: 500;
+}
+
+/* Общий контейнер приложения */
+.app-container {
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 70px; /* Отступ для фиксированного меню */
+  padding-bottom: 60px; /* Отступ для футера */
+  position: relative;
+}

@@ -1,81 +1,116 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import ThemeLanguageSwitcher from './ThemeLanguageSwitcher';
 import '../styles/Navbar.css';
+import { FiMenu, FiX, FiHome, FiImage, FiCircle, FiUser, FiLogIn, FiLogOut, FiHeadphones } from 'react-icons/fi';
 
 /**
  * Компонент навигации
  */
 const Navbar = () => {
-  const { language } = useLanguage();
-  const { isAuthenticated } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { t } = useLanguage();
+  const { isAuthenticated, logout, user } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const defaultAvatar = '/avatar/default-avatar.png'; // Добавлен путь по умолчанию
 
   // Закрываем меню при изменении маршрута
   useEffect(() => {
-    setIsMenuOpen(false);
+    setIsMobileMenuOpen(false);
   }, [location]);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  // Функция для выхода из аккаунта
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
-          Evochka
+          OnlyEva
         </Link>
 
-        {/* Мобильное меню */}
-        <div className="menu-icon" onClick={toggleMenu}>
-          <i className={isMenuOpen ? 'fas fa-times' : 'fas fa-bars'} />
-        </div>
+        {/* Кнопка мобильного меню */}
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label={isMobileMenuOpen ? t('navbar.closeMenu', 'Close Menu') : t('navbar.openMenu', 'Open Menu')}
+        >
+          {isMobileMenuOpen ? (
+            <FiX className="mobile-menu-icon" />
+          ) : (
+            <FiMenu className="mobile-menu-icon" />
+          )}
+        </button>
 
-        {/* Навигационные ссылки */}
-        <ul className={isMenuOpen ? 'nav-menu active' : 'nav-menu'}>
-          <li className="nav-item">
-            <Link to="/" className={location.pathname === '/' ? 'nav-link active' : 'nav-link'}>
-              {language === 'ru' ? 'Главная' : 'Home'}
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link to="/gallery" className={location.pathname === '/gallery' ? 'nav-link active' : 'nav-link'}>
-              {language === 'ru' ? 'Галерея' : 'Gallery'}
-            </Link>
-          </li>
-
-          <li className="nav-item">
-            <Link to="/circle" className={location.pathname === '/circle' ? 'nav-link active' : 'nav-link'}>
-              {language === 'ru' ? 'Кружочки' : 'Circles'}
-            </Link>
-          </li>
-
-          {/* Ссылка на профиль - видна только для авторизованных */}
-          {isAuthenticated && (
+        {/* Десктопное меню */}
+        <div className={`nav-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+          <ul className="nav-items">
             <li className="nav-item">
-              <Link to="/eva" className={location.pathname === '/eva' ? 'nav-link active' : 'nav-link'}>
-                {language === 'ru' ? 'Профиль' : 'Profile'}
+              <Link
+                to="/"
+                className={location.pathname === '/' ? 'nav-link active' : 'nav-link'}
+              >
+                <FiHome className="nav-icon" />
+                <span>{t('navbar.home', 'Home')}</span>
               </Link>
             </li>
-          )}
 
-          {/* Ссылка на вход/выход */}
-          <li className="nav-item login-item">
-            {isAuthenticated ? (
-              <Link to="/eva" className="nav-link login-link">
-                {language === 'ru' ? 'Мой профиль' : 'My Profile'}
+            <li className="nav-item">
+              <Link
+                to="/gallery"
+                className={location.pathname === '/gallery' ? 'nav-link active' : 'nav-link'}
+              >
+                <FiImage className="nav-icon" />
+                <span>{t('navbar.gallery', 'Gallery')}</span>
               </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link
+                to="/voice"
+                className={location.pathname === '/voice' ? 'nav-link active' : 'nav-link'}
+              >
+                <FiHeadphones className="nav-icon" />
+                <span>{t('navbar.voice', 'Voice')}</span>
+              </Link>
+            </li>
+
+            {isAuthenticated && (
+              <li className="nav-item">
+                <Link
+                  to="/circle"
+                  className={location.pathname === '/circle' ? 'nav-link active' : 'nav-link'}
+                >
+                  <FiCircle className="nav-icon" />
+                  <span>{t('navbar.circles', 'Circles')}</span>
+                </Link>
+              </li>
+            )}
+          </ul>
+
+          <div className="nav-controls">
+            <ThemeLanguageSwitcher />
+
+            {isAuthenticated ? (
+              <button onClick={handleLogout} className="auth-button logout-button">
+                <FiLogOut className="auth-icon" />
+                <span>{t('navbar.logout', 'Logout')}</span>
+              </button>
             ) : (
-              <Link to="/login" className="nav-link login-link">
-                {language === 'ru' ? 'Вход' : 'Login'}
+              <Link to="/login" className="auth-button login-button">
+                <FiLogIn className="auth-icon" />
+                <span>{t('navbar.login', 'Login')}</span>
               </Link>
             )}
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
     </nav>
   );

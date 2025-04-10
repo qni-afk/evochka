@@ -1,0 +1,316 @@
+/* Gallery Page Styles */
+.gallery-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
+  position: relative;
+}
+
+.gallery-heading {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 2.5rem;
+  color: var(--primary-color);
+}
+
+.gallery-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+  padding: 20px;
+}
+
+/* Gallery Items */
+.gallery-item-container {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  padding-bottom: 0;
+  transform: rotate(0deg);
+}
+
+body.dark-mode .gallery-item-container {
+  background-color: #2c1e30;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.gallery-item-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Add image centering for gallery items */
+.gallery-item-container img,
+.gallery-item-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+  display: block;
+  transform: rotate(0deg);
+}
+
+.gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0 auto;
+  display: block;
+  border-radius: 8px;
+  transform: rotate(0deg);
+}
+
+/* Fullscreen gallery for profile */
+.fullscreen-gallery {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Cursor Dot */
+.cursor-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: rgba(255, 105, 180, 0.3);
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .cursor-dot {
+    display: block;
+  }
+}
+
+/* Loading Spinner */
+.gallery-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.loader-heart {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  animation: pulse 1.5s infinite;
+}
+
+.loader-text {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.progress-bar {
+  width: 300px;
+  height: 10px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+body.dark-mode .progress-bar {
+  background-color: #36273c;
+}
+
+.progress {
+  height: 100%;
+  background: linear-gradient(90deg, #ff69b4, #ff1493);
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.loading-percentage {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+}
+
+/* Contact Button */
+.contact-button-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.contact-button {
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+}
+
+.contact-button:hover {
+  background-color: #ff1493;
+  transform: translateY(-2px);
+}
+
+.contact-button.active {
+  background-color: #ff1493;
+}
+
+.register-button {
+  background-color: transparent;
+  color: #ff69b4;
+  border: 2px solid #ff69b4;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.register-button:hover {
+  background-color: rgba(255, 105, 180, 0.1);
+  transform: translateY(-2px);
+}
+
+body.dark-mode .register-button {
+  color: #ff80ab;
+  border-color: #ff80ab;
+}
+
+body.dark-mode .register-button:hover {
+  background-color: rgba(255, 128, 171, 0.1);
+}
+
+.button-icon {
+  font-size: 1.2rem;
+}
+
+/* Login Prompt */
+.login-prompt {
+  text-align: center;
+  margin: 50px 0;
+  padding: 30px;
+  border-radius: 12px;
+  background-color: rgba(255, 105, 180, 0.1);
+}
+
+body.dark-mode .login-prompt {
+  background-color: rgba(255, 105, 180, 0.05);
+}
+
+.login-prompt p {
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.login-button {
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+}
+
+.login-button:hover {
+  background-color: #ff1493;
+  transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .gallery-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .gallery-heading {
+    font-size: 2rem;
+  }
+
+  .contact-button, .register-button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .progress-bar {
+    width: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-container {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-heading {
+    font-size: 1.8rem;
+  }
+
+  .contact-button-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .contact-button, .register-button {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .progress-bar {
+    width: 200px;
+  }
+}

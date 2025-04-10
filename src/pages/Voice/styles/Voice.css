@@ -1,0 +1,990 @@
+/* Voice Page Styles - Звездное небо */
+:root {
+  --star-color: rgba(255, 255, 255, 0.8);
+  --shooting-star-color: linear-gradient(to right, rgba(255, 255, 255, 0), #fff, rgba(255, 255, 255, 0));
+  --nebula-1: rgba(103, 65, 217, 0.3);
+  --nebula-2: rgba(233, 30, 99, 0.2);
+  --nebula-3: rgba(63, 81, 181, 0.2);
+  --primary-voice: #9879fe;
+  --secondary-voice: #ff5e62;
+  --comet-tail: 120px;
+  --comet-fire: #ff6a00;
+  --comet-glow: #ff9d00;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background: #000;
+  min-height: 100vh;
+}
+
+.voice-container {
+  position: relative;
+  max-width: none;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding:90px ;
+  overflow: hidden;
+  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+  color: white;
+  border-radius: 0;
+  z-index: 0;
+  box-sizing: border-box;
+}
+
+/* Звезды */
+.cosmic-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -2;
+  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+  overflow: hidden;
+}
+
+.cosmic-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 10%, var(--star-color) 1px, transparent 0),
+    radial-gradient(1px 1px at 20% 20%, var(--star-color) 1px, transparent 0),
+    radial-gradient(1px 1px at 30% 30%, var(--star-color) 1px, transparent 0),
+    radial-gradient(1px 1px at 40% 40%, var(--star-color) 1px, transparent 0),
+    radial-gradient(2px 2px at 50% 50%, var(--star-color) 1px, transparent 0),
+    radial-gradient(1px 1px at 60% 60%, var(--star-color) 1px, transparent 0),
+    radial-gradient(1px 1px at 70% 70%, var(--star-color) 1px, transparent 0),
+    radial-gradient(1px 1px at 80% 80%, var(--star-color) 1px, transparent 0),
+    radial-gradient(1px 1px at 90% 90%, var(--star-color) 1px, transparent 0);
+  background-size: 550px 550px;
+  z-index: -1;
+  opacity: 0.8;
+  animation: twinkle 10s ease-in-out infinite alternate;
+}
+
+.cosmic-background::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 20%, var(--nebula-1), transparent 35%),
+    radial-gradient(circle at 80% 80%, var(--nebula-2), transparent 25%),
+    radial-gradient(circle at 40% 90%, var(--nebula-3), transparent 40%);
+  filter: blur(30px);
+  z-index: -1;
+  opacity: 0.5;
+  animation: pulse-nebula 20s ease-in-out infinite alternate;
+}
+
+/* Основные анимации */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-nebula {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Удаляем старые стили фона из voice-container */
+.voice-container::before,
+.voice-container::after {
+  display: none;
+}
+
+/* Падающие звезды */
+.shooting-star {
+  position: fixed;
+  background: linear-gradient(to bottom,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.3) 60%,
+    rgba(255, 255, 255, 0) 100%);
+  transform: rotate(-45deg);
+  opacity: 0;
+  z-index: 5;
+  pointer-events: none;
+  animation: shooting-star-animation var(--animation-duration, 3s) ease-out;
+  border-radius: 50% 0;
+  filter: blur(1px);
+  box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px rgba(152, 121, 254, 0.5);
+}
+
+@keyframes shooting-star-animation {
+  0% {
+    transform: translateX(-100px) translateY(-100px) rotate(-45deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(calc(100% + 200px)) translateY(calc(100% + 200px)) rotate(-45deg);
+    opacity: 0;
+  }
+}
+
+/* Комета */
+.comet {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  box-shadow: 0 0 20px 2px rgba(255, 255, 255, 0.8),
+              0 0 30px 5px rgba(255, 255, 255, 0.6);
+  z-index: 9999;
+  animation: comet-pulse 1s ease-out;
+}
+
+@keyframes comet-pulse {
+  0% {
+    transform: scale(0.3);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.particle {
+  position: absolute;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  opacity: 1;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+}
+
+/* Создаем частицы за кометой */
+.comet-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.comet-particles::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent 60%);
+  opacity: 0.8;
+  animation: comet-particles-animation 10s linear infinite;
+}
+
+@keyframes comet-particles-animation {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.5);
+  }
+}
+
+/* Контент */
+.voice-content {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.voice-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  opacity: 0;
+  animation: fade-in 1.5s ease-out forwards;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.voice-header h1 {
+  font-size: 2.8rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--primary-voice) 0%, var(--secondary-voice) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: header-cosmic 5s ease-in-out infinite alternate;
+  text-shadow: 0 0 25px rgba(152, 121, 254, 0.5);
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+@keyframes header-cosmic {
+  0% {
+    text-shadow: 0 0 10px rgba(152, 121, 254, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(255, 94, 98, 0.7), 0 0 40px rgba(152, 121, 254, 0.4);
+  }
+  100% {
+    text-shadow: 0 0 15px rgba(152, 121, 254, 0.6), 0 0 30px rgba(255, 94, 98, 0.5);
+  }
+}
+
+.voice-header p {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.5;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+.voice-messages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  position: relative;
+}
+
+.voice-message-item {
+  position: relative;
+  background: rgba(15, 25, 40, 0.7);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  animation: item-appear 0.6s ease-out forwards;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.voice-message-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.voice-message-item:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes item-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.voice-message-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.02) 25%,
+      rgba(255, 255, 255, 0) 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.voice-message-item::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    transparent,
+    transparent,
+    transparent,
+    var(--primary-voice)
+  );
+  z-index: -1;
+  animation: rotate-border 10s linear infinite;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+@keyframes rotate-border {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.voice-message-item:hover,
+.voice-message-item.hovered {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(152, 121, 254, 0.3);
+  background: rgba(25, 35, 60, 0.8);
+}
+
+.voice-message-item:hover::before,
+.voice-message-item.hovered::before {
+  opacity: 1;
+}
+
+.voice-message-item:hover::after,
+.voice-message-item.hovered::after {
+  opacity: 0.15;
+}
+
+.voice-message-item.playing {
+  background: rgba(35, 25, 65, 0.9);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 30px rgba(152, 121, 254, 0.4);
+  transform: translateY(-10px);
+}
+
+.voice-message-item.playing::after {
+  opacity: 0.3;
+}
+
+.voice-message-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.voice-message-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-voice) 0%, #6c4ee6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+  font-size: 1.2rem;
+  transition: all 0.4s ease;
+  box-shadow: 0 3px 10px rgba(108, 78, 230, 0.4), 0 0 15px rgba(108, 78, 230, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.voice-message-icon::after {
+  content: '';
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent 60%);
+  top: -25%;
+  left: -25%;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.voice-message-item:hover .voice-message-icon,
+.voice-message-item.hovered .voice-message-icon {
+  transform: scale(1.15) rotate(10deg);
+  box-shadow: 0 5px 15px rgba(152, 121, 254, 0.6), 0 0 20px rgba(152, 121, 254, 0.3);
+}
+
+.voice-message-item:hover .voice-message-icon::after,
+.voice-message-item.hovered .voice-message-icon::after {
+  opacity: 0.3;
+  animation: spin-light 5s linear infinite;
+}
+
+@keyframes spin-light {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.voice-message-item.playing .voice-message-icon {
+  background: linear-gradient(135deg, var(--secondary-voice) 0%, #ff8a66 100%);
+  animation: pulse-cosmic 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-cosmic {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 3px 10px rgba(255, 94, 98, 0.4), 0 0 20px rgba(255, 94, 98, 0.2);
+  }
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 5px 15px rgba(255, 94, 98, 0.6), 0 0 30px rgba(255, 94, 98, 0.4);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 3px 10px rgba(255, 94, 98, 0.4), 0 0 20px rgba(255, 94, 98, 0.2);
+  }
+}
+
+.voice-message-info {
+  flex-grow: 1;
+}
+
+.voice-message-info h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+  color: white;
+  transition: color 0.3s ease;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.voice-message-item:hover .voice-message-info h3,
+.voice-message-item.hovered .voice-message-info h3 {
+  color: var(--primary-voice);
+  text-shadow: 0 0 8px rgba(152, 121, 254, 0.3);
+}
+
+.voice-message-info p {
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.voice-message-stats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.voice-message-duration {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.voice-message-item:hover .voice-message-duration,
+.voice-message-item.hovered .voice-message-duration {
+  background: rgba(152, 121, 254, 0.1);
+  border-color: rgba(152, 121, 254, 0.2);
+}
+
+.voice-message-item.playing .voice-message-duration {
+  background: rgba(255, 94, 98, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 94, 98, 0.3);
+}
+
+.voice-audio {
+  display: none;
+}
+
+.voice-progress-container {
+  width: 100%;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  transition: height 0.3s ease;
+}
+
+.voice-message-item:hover .voice-progress-container,
+.voice-message-item.hovered .voice-progress-container {
+  height: 6px;
+}
+
+.voice-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-voice) 0%, var(--secondary-voice) 100%);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+  position: relative;
+  overflow: hidden;
+}
+
+.voice-progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shine-cosmic 2s infinite linear;
+  transform: translateX(-100%);
+}
+
+@keyframes shine-cosmic {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Состояние загрузки */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  gap: 1.5rem;
+  background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+  color: white;
+  border-radius: 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    radial-gradient(1px 1px at 25% 25%, var(--star-color) 1px, transparent 0),
+    radial-gradient(1px 1px at 50% 50%, var(--star-color) 1px, transparent 0),
+    radial-gradient(1px 1px at 75% 75%, var(--star-color) 1px, transparent 0),
+    radial-gradient(2px 2px at 33% 33%, var(--star-color) 1px, transparent 0),
+    radial-gradient(2px 2px at 66% 66%, var(--star-color) 1px, transparent 0);
+  background-size: 200px 200px;
+  z-index: 0;
+  opacity: 0.5;
+  animation: twinkle 8s ease-in-out infinite alternate;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 3px solid rgba(152, 121, 254, 0.1);
+  border-top: 3px solid var(--primary-voice);
+  border-radius: 50%;
+  animation: spin-cosmic 1s linear infinite;
+  box-shadow: 0 0 20px rgba(152, 121, 254, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.loading-spinner::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  border: 5px solid transparent;
+  border-bottom: 5px solid rgba(255, 94, 98, 0.3);
+  animation: spin-cosmic-reverse 2s linear infinite;
+}
+
+@keyframes spin-cosmic {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-cosmic-reverse {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.loading-text {
+  font-size: 1.1rem;
+  color: white;
+  position: relative;
+  padding-bottom: 2rem;
+  text-align: center;
+  z-index: 1;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+.loading-text::after {
+  content: "♪ ♫ ♬";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: notes-cosmic 2s ease-in-out infinite;
+  color: var(--primary-voice);
+  text-shadow: 0 0 10px rgba(152, 121, 254, 0.5);
+}
+
+@keyframes notes-cosmic {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translateY(0) translateX(-50%);
+    color: var(--primary-voice);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-15px) translateX(-50%);
+    color: var(--secondary-voice);
+    text-shadow: 0 0 15px rgba(255, 94, 98, 0.7);
+  }
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+  .voice-container {
+    padding: 1.5rem;
+    min-height: 85vh;
+  }
+
+  .voice-header h1 {
+    font-size: 2rem;
+  }
+
+  .voice-messages-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .waveform-bar {
+    width: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .voice-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+  }
+
+  .voice-message-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .voice-message-info h3 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Космическая пыль внутри карточек */
+.cosmic-dust {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.cosmic-dust::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image:
+    radial-gradient(1px 1px at 40% 40%, rgba(255, 255, 255, 0.8) 1px, transparent 0),
+    radial-gradient(1px 1px at 60% 60%, rgba(255, 255, 255, 0.6) 1px, transparent 0),
+    radial-gradient(1px 1px at 30% 70%, rgba(255, 255, 255, 0.5) 1px, transparent 0),
+    radial-gradient(1px 1px at 70% 30%, rgba(255, 255, 255, 0.7) 1px, transparent 0);
+  background-size: 100px 100px;
+  animation: cosmic-dust-rotation 40s linear infinite;
+}
+
+@keyframes cosmic-dust-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.voice-message-item:hover .cosmic-dust,
+.voice-message-item.hovered .cosmic-dust,
+.voice-message-item.playing .cosmic-dust {
+  opacity: 0.6;
+}
+
+/* Переопределим некоторые стили для лучшего эффекта */
+.voice-waveform {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+  height: 35px;
+  position: relative;
+  z-index: 2;
+}
+
+.waveform-bar {
+  width: 3px;
+  background: linear-gradient(to top, var(--primary-voice), var(--secondary-voice));
+  border-radius: 6px;
+  transform-origin: bottom;
+  animation: waveform-cosmic 1.2s ease-in-out infinite;
+  box-shadow: 0 0 15px rgba(152, 121, 254, 0.6), 0 0 5px #fff;
+}
+
+.waveform-bar:nth-child(1) {
+  animation-delay: 0.1s;
+  height: 22px;
+}
+
+.waveform-bar:nth-child(2) {
+  animation-delay: 0.3s;
+  height: 30px;
+}
+
+.waveform-bar:nth-child(3) {
+  animation-delay: 0.5s;
+  height: 40px;
+}
+
+.waveform-bar:nth-child(4) {
+  animation-delay: 0.7s;
+  height: 28px;
+}
+
+.waveform-bar:nth-child(5) {
+  animation-delay: 0.9s;
+  height: 35px;
+}
+
+@keyframes waveform-cosmic {
+  0%, 100% {
+    transform: scaleY(0.3);
+    opacity: 0.6;
+    box-shadow: 0 0 10px rgba(152, 121, 254, 0.4), 0 0 3px #fff;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+    box-shadow: 0 0 20px rgba(255, 94, 98, 0.8), 0 0 8px #fff;
+  }
+}
+
+/* Дополнительные эффекты для состояния воспроизведения */
+.voice-message-item.playing {
+  animation: cosmic-glow 4s ease-in-out infinite alternate;
+}
+
+@keyframes cosmic-glow {
+  0% {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 30px rgba(152, 121, 254, 0.4);
+  }
+  100% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 50px rgba(255, 94, 98, 0.4);
+  }
+}
+
+.audio-message {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.audio-message:hover, .audio-message.hovered {
+  background-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.audio-message::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: all 0.5s ease;
+}
+
+.audio-message:hover::before, .audio-message.hovered::before {
+  left: 100%;
+}
+
+.audio-message:active {
+  transform: translateY(0);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid #ffcc00;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+.loading-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  letter-spacing: 1px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.waveform {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  margin-left: 15px;
+}
+
+.waveform-bar {
+  width: 3px;
+  height: 15px;
+  margin: 0 2px;
+  background-color: #ffcc00;
+  border-radius: 5px;
+  transition: height 0.2s ease;
+}
+
+.waveform-bar:nth-child(1) { animation: wave 1.0s infinite ease-in-out; }
+.waveform-bar:nth-child(2) { animation: wave 1.2s infinite ease-in-out; animation-delay: 0.1s; }
+.waveform-bar:nth-child(3) { animation: wave 1.0s infinite ease-in-out; animation-delay: 0.2s; }
+.waveform-bar:nth-child(4) { animation: wave 1.3s infinite ease-in-out; animation-delay: 0.3s; }
+.waveform-bar:nth-child(5) { animation: wave 1.1s infinite ease-in-out; animation-delay: 0.4s; }
+
+@keyframes wave {
+  0%, 100% { height: 5px; }
+  50% { height: 25px; }
+}
+
+.play-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-right: 15px;
+  transition: all 0.3s ease;
+}
+
+.play-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.audio-info {
+  flex: 1;
+}
+
+.audio-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.audio-duration {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

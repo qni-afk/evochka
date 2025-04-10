@@ -3,25 +3,35 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "vite",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "stop": "npx kill-port 5000 5173 5174 5175 5176",
+    "verify": "curl -s http://localhost:5000/api/health && echo ''"
   },
+
   "dependencies": {
+    "axios": "^1.8.4",
     "framer-motion": "^12.6.2",
     "gsap": "^3.12.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.5.0",
     "react-responsive": "^10.0.1",
-    "react-router-dom": "^6.22.1"
+    "react-router-dom": "^6.30.0"
   },
+
   "devDependencies": {
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^9.1.2",
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",

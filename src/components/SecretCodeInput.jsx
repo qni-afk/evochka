@@ -19,11 +19,11 @@ const SecretCodeInput = () => {
     '333': '/secret-love',
     '143': '/secret-love',
     'circle': '/circle',
-    'admin': '/eva',
+    'admin': '/login',
     'gallery': '/gallery',
+    'voice': '/voice',
     'home': '/',
     'login': '/login',
-    'profile': '/eva',
 
     // Специальные команды
     'music': () => {

@@ -1,11 +1,21 @@
 #root {
   width: 100%;
+  max-width: 100%;
+  height: 100%;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 .app {
   width: 100%;
+  max-width: 100%;
+  height: 100%;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 .page-container {
@@ -13,9 +23,13 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding-top: 80px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   background: linear-gradient(45deg, #fff5f5, #ffe6e6);
   color: #333;
+  overflow-x: hidden;
 }
 
 .page-container h1 {
@@ -118,4 +132,96 @@
   font-size: 18px;
   color: var(--primary-color, #9370DB);
   font-weight: 500;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 10;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  background-color: #f5f5f7;
+  color: #333;
+  overflow-x: hidden;
+}
+
+/* Стили для темного режима на уровне app-content */
+.app-content.dark-mode {
+  background-color: #1a1a2e;
+  color: #f5f5f7;
+}
+
+.main-content {
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Отключаем все padding в main-content */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 0;
+  }
+}
+
+/* Класс для отключения отступов (для страниц логина и регистрации) */
+.no-padding {
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.app-content.no-padding {
+  padding: 0;
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 0;
+  }
+
+  .main-content.no-padding {
+    padding: 0;
+  }
+}
+
+/* Общие стили для всех страниц */
+.page-container,
+.gallery-page,
+.eva-container,
+.circle-container,
+.circles-container,
+.secret-love-container,
+.not-found-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }

@@ -1,0 +1,329 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat Alternates', sans-serif;
+  color: #fff;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  background: transparent;
+}
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 100vh;
+  background: transparent !important;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Стили для навигации */
+.navbar {
+  position: fixed;
+  top: 20px;
+  left: 0;
+  right: 0;
+  width: max-content;
+  margin: 0 auto;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 30px;
+  padding: 12px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform;
+  transform: translateZ(0) !important;
+}
+
+.navbar:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px) translateZ(0) !important;
+}
+
+.nav-list {
+  display: flex;
+  gap: 15px;
+  list-style: none;
+}
+
+.nav-list button {
+  background: transparent;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  font-size: 16px;
+  position: relative;
+  font-weight: 500;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  font-family: 'Montserrat Alternates', sans-serif;
+}
+
+.nav-list button.active {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  font-weight: 700;
+  transform: scale(1.05);
+}
+
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.video-background video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+  will-change: opacity;
+}
+
+.video-background video.active {
+  opacity: 1 !important;
+  z-index: 1;
+}
+
+.video-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.title {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  transform: translateY(50px);
+  text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.animate__title {
+  opacity: 0;
+  background: linear-gradient(45deg, rgba(147, 112, 219, 0.9), rgba(192, 145, 255, 0.9), rgba(147, 112, 219, 0.9));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: translateY(50px);
+  font-size: 3.5rem;
+  font-weight: 900;
+  text-shadow: 0 0 50px rgba(147, 112, 219, 0.5);
+}
+
+.animate__text {
+  opacity: 0;
+  transform: translateY(30px);
+  font-size: 1.5rem;
+  margin-top: 20px;
+}
+
+.content-text {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.sections {
+  padding: 50px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.section {
+  padding: 30px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
+  transition: all 0.5s ease;
+  transform: translateY(50px);
+  opacity: 0;
+}
+
+.section h2 {
+  margin-bottom: 15px;
+  font-size: 2rem;
+  color: #a981e3;
+  text-shadow: 0 2px 10px rgba(170, 129, 229, 0.97);
+}
+
+.section p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+#love-timer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 15px 20px;
+  border-radius: 15px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #fff;
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 20px;
+  position: relative;
+}
+
+.gallery-image {
+  width: 100%;
+  height: 250px;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  opacity: 1;
+  transform: scale(1);
+  display: block;
+}
+
+.gallery-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.hearts {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.heart {
+  position: absolute;
+  font-size: px;
+  z-index:1;
+  font-weight: bold;
+  color: #f7a5ce;
+  opacity: 10;
+  will-change: transform;
+}
+
+.dark-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(45, 45, 45, 0.2);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Dark mode styles - will apply to the entire site */
+body.dark-mode {
+  background-color: #121212 !important;
+  color: #f0f0f0 !important;
+}
+
+body.dark-mode .wrapper,
+body.dark-mode .container,
+body.dark-mode .content-wrapper,
+body.dark-mode .page-container {
+  background-color: #121212 !important;
+  color: #f0f0f0 !important;
+}
+
+/* Dark mode for components with backgrounds */
+body.dark-mode .section,
+body.dark-mode .card,
+body.dark-mode .content-box,
+body.dark-mode .panel {
+  background-color: #1e1e1e !important;
+  color: #f0f0f0 !important;
+  border-color: #333 !important;
+}
+
+/* Dark mode for headings */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+  color: #ffffff !important;
+}
+
+/* Dark mode for inputs and form elements */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select,
+body.dark-mode button:not(.theme-toggle):not(.language-toggle):not(.starry-toggle) {
+  background-color: #2d2d2d !important;
+  color: #ffffff !important;
+  border-color: #444 !important;
+}
+
+/* Dark mode for navbar */
+body.dark-mode .navbar {
+  background: rgba(25, 25, 35, 0.8) !important;
+  border-color: rgba(60, 60, 70, 0.3) !important;
+}
+
+body.dark-mode .nav-list button {
+  color: #ffffff !important;
+}
+
+body.dark-mode .nav-list button.active {
+  background: rgba(60, 60, 80, 0.5) !important;
+}

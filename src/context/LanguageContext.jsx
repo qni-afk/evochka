@@ -35,54 +35,86 @@ const translations = {
       cancel: "Отмена",
       add: "Добавить",
       logout: "Выйти"
+    },
+    vi: {
+      home: "Trang chủ",
+      gallery: "Thư viện",
+      games: "Trò chơi",
+      eva: "Eva",
+      loading: "Đang tải...",
+      startGame: "Bắt đầu trò chơi",
+      seeMore: "Xem thêm",
+      viewMore: "Xem thêm ảnh",
+      withLove: "Với tình yêu mãi mãi",
+      changeTheme: "Thay đổi chủ đề",
+      saveChanges: "Lưu thay đổi",
+      cancel: "Hủy bỏ",
+      add: "Thêm",
+      logout: "Đăng xuất"
     }
   },
 
   // Страница Eva
   eva: {
     en: {
-      mySweetGirl: "My sweet girl",
+      mySweetGirl: "My Sweet Girl",
       moodToday: "Mood today:",
       gallery: "Gallery",
       wishes: "Wishes",
       features: "Features",
       compliments: "Compliments",
-      ourMemories: "Our Memories",
-      wishList: "Wish List",
-      addNewWish: "Add a new wish...",
-      featureList: "Feature List",
-      filterByPriority: "Filter by priority:",
-      all: "All",
-      high: "High",
-      medium: "Medium",
-      low: "Low",
-      addNewActivity: "Add a new fun activity...",
-      funActivitiesTogether: "Fun Activities Together",
-      funActivitiesDescription: "Create a list of fun activities we can do together. Set priorities, mark your favorites, and let's make memories!",
+      memories: "Memories",
+      achievements: "Achievements",
+      addFeature: "Add a new feature...",
+      addWish: "Add a new wish...",
+      yourFeatures: "Your Wonderful Features",
+      yourWishes: "Your Little Wishes",
       newCompliment: "New Compliment",
-      loveNote: "You are the best thing that has ever happened to me. Every day with you is a little miracle."
+      loveNote: "Every day with you is a special gift. I love you more than words can say.",
+      ourMemories: "Our Memories",
+      ourAchievements: "Our Achievements",
+      loadingAchievements: "Loading achievements...",
+      noAchievements: "No achievements unlocked yet."
     },
     ru: {
-      mySweetGirl: "Моя сладкая девочка",
+      mySweetGirl: "Моя Милая Девочка",
       moodToday: "Настроение сегодня:",
       gallery: "Галерея",
       wishes: "Желания",
-      features: "Активности",
+      features: "Особенности",
       compliments: "Комплименты",
-      ourMemories: "Наши воспоминания",
-      wishList: "Список желаний",
-      addNewWish: "Добавить новое желание...",
-      featureList: "Список активностей",
-      filterByPriority: "Фильтр по приоритету:",
-      all: "Все",
-      high: "Высокий",
-      medium: "Средний",
-      low: "Низкий",
-      addNewActivity: "Добавить новую активность...",
-      funActivitiesTogether: "Весёлые занятия вместе",
-      funActivitiesDescription: "Создайте список весёлых занятий, которые мы можем делать вместе. Установите приоритеты, отметьте любимые и давайте создадим воспоминания!",
-      newCompliment: "Новый комплимент",
-      loveNote: "Ты самое лучшее, что случилось в моей жизни. Каждый день с тобой — это маленькое чудо."
+      memories: "Воспоминания",
+      achievements: "Достижения",
+      addFeature: "Добавить новую особенность...",
+      addWish: "Добавить новое желание...",
+      yourFeatures: "Твои Замечательные Особенности",
+      yourWishes: "Твои Маленькие Желания",
+      newCompliment: "Новый Комплимент",
+      loveNote: "Каждый день с тобой - особенный подарок. Люблю тебя больше, чем можно выразить словами.",
+      ourMemories: "Наши Воспоминания",
+      ourAchievements: "Наши Достижения",
+      loadingAchievements: "Загрузка достижений...",
+      noAchievements: "Достижения пока не разблокированы."
+    },
+    vi: {
+      mySweetGirl: "Cô Gái Ngọt Ngào Của Tôi",
+      moodToday: "Tâm trạng hôm nay:",
+      gallery: "Thư viện",
+      wishes: "Mong ước",
+      features: "Đặc điểm",
+      compliments: "Lời khen",
+      memories: "Kỷ niệm",
+      achievements: "Thành tích",
+      addFeature: "Thêm đặc điểm mới...",
+      addWish: "Thêm ước muốn mới...",
+      yourFeatures: "Những Đặc Điểm Tuyệt Vời Của Bạn",
+      yourWishes: "Những Ước Muốn Nhỏ Của Bạn",
+      newCompliment: "Lời Khen Mới",
+      loveNote: "Mỗi ngày bên em là một món quà đặc biệt. Anh yêu em nhiều hơn những gì anh có thể nói.",
+      ourMemories: "Kỷ Niệm Của Chúng Ta",
+      ourAchievements: "Thành Tích Của Chúng Ta",
+      loadingAchievements: "Đang tải thành tích...",
+      noAchievements: "Chưa có thành tích nào được mở khóa."
     }
   },
 
@@ -109,6 +141,17 @@ const translations = {
       shop: "Магазин",
       score: "Очки",
       energy: "Энергия"
+    },
+    vi: {
+      gardenGame: "Trò chơi nhỏ 'Người làm vườn'",
+      gardenDescription: "Kết hợp các cây giống nhau để tạo ra cây mới và kiếm điểm!",
+      notEnoughEnergy: "Không đủ năng lượng! Chờ hồi phục.",
+      noFreeSpace: "Không có chỗ trống! Kết hợp các phần tử.",
+      energyRecovered: "Năng lượng đã hồi phục!",
+      dailyEnergy: "Năng lượng hàng ngày",
+      shop: "Cửa hàng",
+      score: "Điểm số",
+      energy: "Năng lượng"
     }
   },
 
@@ -136,6 +179,18 @@ const translations = {
       filterCool: "Крутые",
       viewMode: "Режим просмотра",
       grid: "Сетка",
+      threeD: "3D"
+    },
+    vi: {
+      galleryTitle: "Thư viện",
+      loadingPhotos: "Đang tải ảnh...",
+      loadingVideos: "Đang tải video...",
+      filterAll: "Tất cả",
+      filterFunny: "Hài hước",
+      filterCute: "Dễ thương",
+      filterCool: "Thật chất",
+      viewMode: "Chế độ xem",
+      grid: "Lưới",
       threeD: "3D"
     }
   },
@@ -179,28 +234,93 @@ const translations = {
       hours: "часов",
       minutes: "минут",
       seconds: "секунд"
+    },
+    vi: {
+      aboutYou: "về em",
+      happiness: "Niềm hạnh phúc của anh",
+      dream: "Ước mơ của anh",
+      comfort: "Sự thoải mái của anh",
+      meaning: "Em có ý nghĩa rất lớn với anh",
+      sweet: "Em thật ngọt ngào",
+      happinessText: "Anh thật may mắn khi em đã chọn anh.",
+      dreamText: "với em anh thật thoải mái.",
+      comfortText: "anh quên đi mọi vấn đề khi ở bên em.",
+      meaningText: "khi anh ở bên em, anh cảm thấy rất tốt.",
+      sweetText: "em rất quyến rũ.",
+      togetherFor: "Chúng ta đã bên nhau:",
+      years: "năm",
+      days: "ngày",
+      hours: "giờ",
+      minutes: "phút",
+      seconds: "giây"
     }
   },
 
   // Страница логина
   login: {
-    ru: {
-      title: 'Авторизация',
-      username: 'Логин',
-      password: 'Пароль',
-      login: 'Войти',
-      passwordHint: 'Подсказка: то, что чувствуешь к Еве',
-      errorMessage: 'Неверный логин или пароль'
-    },
     en: {
-      title: 'Authorization',
-      username: 'Username',
-      password: 'Password',
-      login: 'Log In',
-      passwordHint: 'Hint: what you feel for Eva',
-      errorMessage: 'Invalid username or password'
+      title: "Login",
+      subtitle: "Welcome back! Please log in to your account.",
+      emailPlaceholder: "Username",
+      passwordPlaceholder: "Password",
+      rememberMe: "Remember me",
+      forgotPassword: "Forgot password?",
+      loginButton: "Log In",
+      noAccount: "Don't have an account?",
+      registerLink: "Register",
+      termsText: "By logging in, you agree to our",
+      termsLink: "Terms & Privacy",
+      allFieldsRequired: "All fields are required",
+      invalidCredentials: "Invalid username or password",
+      serverError: "Server error. Please try again later."
+    },
+    ru: {
+      title: "Вход",
+      subtitle: "С возвращением! Пожалуйста, войдите в свой аккаунт.",
+      emailPlaceholder: "Имя пользователя",
+      passwordPlaceholder: "Пароль",
+      rememberMe: "Запомнить меня",
+      forgotPassword: "Забыли пароль?",
+      loginButton: "Войти",
+      noAccount: "Нет аккаунта?",
+      registerLink: "Зарегистрироваться",
+      termsText: "Входя, вы соглашаетесь с нашими",
+      termsLink: "Условиями и политикой конфиденциальности",
+      allFieldsRequired: "Все поля обязательны",
+      invalidCredentials: "Неверное имя пользователя или пароль",
+      serverError: "Ошибка сервера. Пожалуйста, попробуйте позже."
+    },
+    vi: {
+      title: "Đăng nhập",
+      subtitle: "Chào mừng trở lại! Vui lòng đăng nhập vào tài khoản của bạn.",
+      emailPlaceholder: "Tên người dùng",
+      passwordPlaceholder: "Mật khẩu",
+      rememberMe: "Ghi nhớ tôi",
+      forgotPassword: "Quên mật khẩu?",
+      loginButton: "Đăng nhập",
+      noAccount: "Chưa có tài khoản?",
+      registerLink: "Đăng ký",
+      termsText: "Bằng cách đăng nhập, bạn đồng ý với",
+      termsLink: "Điều khoản & Quyền riêng tư",
+      allFieldsRequired: "Tất cả các trường là bắt buộc",
+      invalidCredentials: "Tên người dùng hoặc mật khẩu không hợp lệ",
+      serverError: "Lỗi máy chủ. Vui lòng thử lại sau."
     }
-  }
+  },
+
+  // Навигация
+  navbar: {
+    home: 'Главная',
+    gallery: 'Галерея',
+    games: 'Игры',
+    voice: 'Голос',
+    circles: 'Кружочки',
+    profile: 'Профиль',
+    login: 'Войти',
+    logout: 'Выйти',
+    openMenu: 'Открыть меню',
+    closeMenu: 'Закрыть меню',
+  },
 };
 
 // Создаем контекст языка
@@ -214,13 +334,30 @@ export const LanguageProvider = ({ children }) => {
     return savedLanguage || 'ru';
   });
 
-  // Функция для переключения языка
+  // Функция для переключения языка циклически: ru -> en -> vi -> ru
   const toggleLanguage = () => {
     setLanguage(prevLang => {
-      const newLang = prevLang === 'ru' ? 'en' : 'ru';
+      let newLang;
+      if (prevLang === 'ru') {
+        newLang = 'en';
+      } else if (prevLang === 'en') {
+        newLang = 'vi';
+      } else {
+        newLang = 'ru';
+      }
       localStorage.setItem('appLanguage', newLang);
       return newLang;
     });
+  };
+
+  // Функция для установки конкретного языка
+  const setSpecificLanguage = (lang) => {
+    if (['ru', 'en', 'vi'].includes(lang)) {
+      setLanguage(lang);
+      localStorage.setItem('appLanguage', lang);
+    } else {
+      console.warn(`Unsupported language: ${lang}`);
+    }
   };
 
   // Функция для получения перевода
@@ -253,7 +390,9 @@ export const LanguageProvider = ({ children }) => {
     language,
     toggleLanguage,
     setLanguage,
-    t
+    setSpecificLanguage,
+    t,
+    availableLanguages: ['ru', 'en', 'vi']
   };
 
   return (

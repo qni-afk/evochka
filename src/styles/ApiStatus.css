@@ -13,6 +13,16 @@
   transition: all 0.3s ease;
   z-index: 1000;
   cursor: pointer;
+  max-width: 300px;
+  overflow: hidden;
+}
+
+.api-status.expanded {
+  border-radius: 15px;
+  padding: 15px;
+  max-width: 300px;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .api-status:hover {
@@ -27,13 +37,13 @@
   transition: background-color 0.3s ease;
 }
 
-.api-status.up .api-status-indicator {
+.api-status.available .api-status-indicator {
   background-color: #4CAF50;
   box-shadow: 0 0 8px #4CAF50;
   animation: pulse-green 2s infinite;
 }
 
-.api-status.down .api-status-indicator {
+.api-status.unavailable .api-status-indicator {
   background-color: #F44336;
   box-shadow: 0 0 8px #F44336;
   animation: pulse-red 2s infinite;
@@ -51,12 +61,12 @@
   animation: pulse-grey 2s infinite;
 }
 
-.api-status.up {
+.api-status.available {
   border: 1px solid #4CAF50;
   color: #4CAF50;
 }
 
-.api-status.down {
+.api-status.unavailable {
   border: 1px solid #F44336;
   color: #F44336;
 }
@@ -73,6 +83,39 @@
 
 .api-status-text {
   font-weight: 500;
+}
+
+.api-status-details {
+  margin-top: 12px;
+  width: 100%;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.api-status-details p {
+  margin: 4px 0;
+}
+
+.force-check-btn {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 15px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.api-status.available .force-check-btn:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.api-status.unavailable .force-check-btn:hover,
+.api-status.offline .force-check-btn:hover {
+  background-color: #F44336;
+  color: white;
 }
 
 @keyframes pulse-green {
@@ -132,8 +175,21 @@
     font-size: 10px;
   }
 
+  .api-status.expanded {
+    padding: 10px;
+  }
+
   .api-status-indicator {
     width: 8px;
     height: 8px;
+  }
+
+  .api-status-details {
+    font-size: 10px;
+  }
+
+  .force-check-btn {
+    font-size: 10px;
+    padding: 5px 10px;
   }
 }

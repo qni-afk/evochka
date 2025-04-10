@@ -1,35 +1,41 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 /**
- * Компонент для защиты маршрутов, требующих аутентификации
- * Если пользователь не аутентифицирован, перенаправляет на страницу входа
+ * Компонент для защиты маршрутов от неавторизованных пользователей
+ * Перенаправляет на страницу входа, если пользователь не авторизован
  */
-const PrivateRoute = ({ element }) => {
-  const { isAuthenticated, loading } = useAuth();
+const PrivateRoute = ({ children }) => {
+  const { isAuthenticated, loading, user } = useAuth();
+  const location = useLocation();
 
-  console.log("PrivateRoute: isAuthenticated =", isAuthenticated, "loading =", loading);
+  console.log("PrivateRoute: path=", location.pathname, "isAuthenticated=", isAuthenticated, "loading=", loading, "user=", user);
 
-  // Если идет процесс проверки аутентификации, отображаем индикатор загрузки
+  useEffect(() => {
+    // Сохраняем текущий маршрут, чтобы вернуться к нему после входа
+    if (!isAuthenticated && !loading) {
+      localStorage.setItem('redirectAfterLogin', location.pathname);
+    }
+  }, [isAuthenticated, loading, location]);
+
+  // Показываем индикатор загрузки, пока проверяется авторизация
   if (loading) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
-        <p>Загрузка...</p>
+        <p>Проверка авторизации...</p>
       </div>
     );
   }
 
-  // Если пользователь не аутентифицирован, перенаправляем на страницу входа
-  if (!isAuthenticated) {
-    console.log("PrivateRoute: перенаправление на /login");
-    return <Navigate to="/login" replace />;
+  // Если пользователь авторизован, показываем защищенный контент
+  if (isAuthenticated) {
+    return children;
   }
 
-  // Если пользователь аутентифицирован, рендерим компонент
-  console.log("PrivateRoute: рендеринг защищенного компонента");
-  return element;
+  // Если пользователь не авторизован, перенаправляем на страницу входа
+  return <Navigate to="/login" replace state={{ from: location }} />;
 };
 
 export default PrivateRoute;

@@ -1,0 +1,594 @@
+:root {
+  --primary-light: #FF69B4;
+  --primary-dark: #8A2BE2;
+  --secondary-light: #FFB6C1;
+  --secondary-dark: #9370DB;
+  --text-light: #333;
+  --text-dark: #fff;
+  --bg-light: #f9f9f9;
+  --bg-dark: #282a36;
+  --shadow-light: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --shadow-dark: 0 8px 30px rgba(255, 105, 180, 0.3);
+  --transition: all 0.3s ease;
+}
+
+.home-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.wrapper {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.home-content {
+  position: relative;
+  z-index: 1;
+}
+
+.content-wrapper {
+  position: relative;
+  padding-bottom: 60px;
+}
+
+/* Видео-фон */
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.video-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+}
+
+.video-background video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translateX(-50%) translateY(-50%);
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  object-fit: cover;
+}
+
+.video-background video.active {
+  opacity: 1;
+}
+
+/* Контейнер основного контента */
+.container {
+  position: relative;
+  padding: 120px 20px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: white;
+  text-align: center;
+  z-index: 2;
+}
+
+.title {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  transform: translateY(30px);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.content-text {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+/* Частицы */
+.particles-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.6);
+  filter: blur(2px);
+  pointer-events: none;
+  box-shadow: 0 0 5px currentColor;
+  transition: none;
+}
+
+/* Плавающее сообщение */
+.floating-message {
+  position: absolute;
+  top: 60px;
+  right: 10%;
+  opacity: 0;
+  transform: translateY(20px);
+  z-index: 10;
+}
+
+.message-content {
+  position: relative;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  color: white;
+  animation: float 5s ease-in-out infinite;
+}
+
+.message-content p {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.message-tail {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  right: 20px;
+  bottom: -10px;
+  transform: rotate(45deg);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Дождь из сердечек */
+.heart-rain {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.heart {
+  position: absolute;
+  top: -50px;
+  animation: heart-fall linear forwards;
+  opacity: 0.8;
+  will-change: transform, opacity;
+}
+
+@keyframes heart-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(calc(100vh + 50px)) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Таймер отношений */
+.love-timer {
+  padding: 15px 25px;
+  margin: 30px auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 15px;
+  color: white;
+  display: inline-block;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  animation: glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 5px rgba(255, 105, 180, 0.3); }
+  to { box-shadow: 0 0 10px rgba(255, 105, 180, 0.6); }
+}
+
+/* Любовное сообщение */
+.love-message {
+  display: block;
+  margin-top: 40px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 15px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-origin: center;
+  animation: message-entrance 1.5s ease-out forwards;
+  z-index: 10;
+}
+
+.love-text {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.response-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.response-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.yes-btn {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  color: white;
+}
+
+.no-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.love-response {
+  margin-top: 15px;
+  font-size: 1.2rem;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(255, 0, 100, 0.7);
+}
+
+@keyframes message-entrance {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.yes-btn:hover, .no-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+}
+
+/* Секции с текстом */
+.sections {
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.section {
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 60px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 20px;
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.section-hovered {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.section-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  display: inline-block;
+  animation: pulse 3s infinite ease-in-out;
+}
+
+.section h2 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  color: var(--primary-light);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.section p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.section-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: -100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  animation: glow-sweep 10s infinite linear;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.section-hovered .section-glow {
+  opacity: 1;
+}
+
+@keyframes glow-sweep {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Галерея */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Кнопка музыки */
+.music-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  z-index: 100;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.music-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(255, 105, 180, 0.4);
+}
+
+.music-toggle.playing {
+  animation: rotate 12s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.music-toggle i {
+  font-size: 1.2rem;
+}
+
+/* Кнопка навигации */
+.button-container {
+  text-align: center;
+  margin: 60px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.navigate-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  padding: 15px 40px;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  color: white;
+  text-decoration: none;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(255, 105, 180, 0.3);
+  border: none;
+  cursor: pointer;
+}
+
+.navigate-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 25px rgba(255, 105, 180, 0.4);
+}
+
+.btn-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shine 5s infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  15% { left: 100%; }
+  100% { left: 100%; }
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 1024px) {
+  .title {
+    font-size: 3rem;
+  }
+
+  .section {
+    padding: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 100px 20px 30px;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .floating-message {
+    right: 5%;
+    max-width: 250px;
+  }
+
+  .love-timer {
+    font-size: 0.9rem;
+    padding: 10px 15px;
+  }
+
+  .music-toggle {
+    width: 40px;
+    height: 40px;
+    bottom: 15px;
+    right: 15px;
+  }
+
+  .section {
+    padding: 25px;
+    margin-bottom: 40px;
+  }
+
+  .section h2 {
+    font-size: 1.8rem;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 80px 15px 20px;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .content-text {
+    font-size: 1rem;
+  }
+
+  .floating-message {
+    top: 40px;
+    right: 50%;
+    transform: translateX(50%) translateY(20px);
+    max-width: 80%;
+  }
+
+  .section {
+    padding: 20px;
+    margin-bottom: 40px;
+  }
+
+  .section h2 {
+    font-size: 1.5rem;
+  }
+
+  .section p {
+    font-size: 1rem;
+  }
+
+  .section-icon {
+    font-size: 2rem;
+  }
+
+  .love-message {
+    padding: 15px;
+    max-width: 90%;
+  }
+
+  .heart {
+    font-size: 12px !important;
+  }
+
+  .navigate-btn {
+    padding: 12px 30px;
+    font-size: 1rem;
+  }
+}

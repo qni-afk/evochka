@@ -10,23 +10,30 @@ const Footer = () => {
   const { language } = useLanguage();
   const currentYear = new Date().getFullYear();
 
+  // Helper function to get translation based on current language
+  const getTranslation = (ru, en, vi) => {
+    if (language === 'ru') return ru;
+    if (language === 'vi') return vi;
+    return en; // default to English
+  };
+
   return (
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-logo">Eva</div>
         <div className="footer-links">
           <a href="/" className="footer-link">
-            {language === 'ru' ? 'Главная' : 'Home'}
+            {getTranslation('Главная', 'Home', 'Trang chủ')}
           </a>
           <a href="/gallery" className="footer-link">
-            {language === 'ru' ? 'Галерея' : 'Gallery'}
+            {getTranslation('Галерея', 'Gallery', 'Thư viện')}
           </a>
         </div>
         <div className="footer-copyright">
-          &copy; {currentYear} {language === 'ru' ? 'Все права защищены' : 'All rights reserved'}
+          &copy; {currentYear} {getTranslation('Все права защищены', 'All rights reserved', 'Đã đăng ký Bản quyền')}
         </div>
         <div className="footer-made-with">
-          {language === 'ru' ? 'Сделано Димой' : 'Made by Qni'} ❤️
+          {getTranslation('Сделано Димой', 'Made by Qni', 'Được tạo bởi Dima')} ❤️
         </div>
       </div>
     </footer>

@@ -1,0 +1,86 @@
+/* Глобальные стили приложения */
+.app-container {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Темная тема */
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-mode .app-container {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* Цвета для светлой темы */
+body:not(.dark-mode):not(.starry-background) {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+body:not(.dark-mode):not(.starry-background) .app-container {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+/* Плавный переход между темами и фонами */
+body {
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+  .app-container {
+    padding-bottom: 60px; /* Для мобильного футера */
+  }
+}
+
+/* Стили для звездного неба */
+body.starry-background:not(.dark-mode) {
+  background: linear-gradient(to bottom, #131862, #2e3192);
+  color: #ffffff;
+}
+
+body.starry-background.dark-mode {
+  background: linear-gradient(to bottom, #0f0c29, #302b63);
+  color: #ffffff;
+}
+
+/* Контент в звездном небе */
+body.starry-background .app-container {
+  background: transparent;
+}
+
+/* Предотвращение скролла при модальных окнах */
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* Базовые анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Скрытие полос прокрутки при необходимости */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
